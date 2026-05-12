@@ -16,8 +16,8 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'RVsOffGrid — RV Solar Installations in Burleson, TX',
-  description: 'Professional RV solar installations in Burleson and the DFW area. 150+ installs, Victron certified, 1-day typical install. Get your free solar assessment today!',
+  title: 'Avalon RV — RV Solar Installations in Benicia, CA',
+  description: "Northern California's #1 RV solar installer. Master Certified, 20+ years experience, 10,000+ happy customers. Get your free solar assessment today!",
   generator: 'v0.app',
   icons: {
     icon: [
@@ -44,7 +44,7 @@ export default function RootLayout({
           })(window,document,'script','dataLayer','GTM-KMTMCB29');`}
         </Script>
         {/* DNS prefetch for external assets */}
-        <link rel="dns-prefetch" href="https://rvsoffgrid.com" />
+        <link rel="dns-prefetch" href="https://avalonrv.com" />
         <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
 
         {/* Microsoft Clarity */}

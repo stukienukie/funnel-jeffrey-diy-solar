@@ -1,8 +1,8 @@
 import { Award, MapPin, Phone } from 'lucide-react'
 
 const trustItems = [
-  { icon: Award, text: 'Victron Energy Certified' },
-  { icon: MapPin, text: 'Burleson & DFW Area' },
+  { icon: Award, text: 'Master Certified RV Technician' },
+  { icon: MapPin, text: 'Benicia & Northern California' },
   { icon: Phone, text: 'Free No-Pressure Assessment' },
 ]
 

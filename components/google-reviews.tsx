@@ -2,22 +2,22 @@ import { Star } from 'lucide-react'
 
 const reviews = [
   {
-    initials: 'JB',
-    name: 'Jonathan Bassham',
-    date: '27 days ago',
-    text: 'Jason and his team did an excellent job on my Victron electrical system for my Sprinter at a very reasonable price. He added an additional lithium battery, an additional dc-dc charger and fixed some cabling that the original upfitter had done incorrectly. I was so impressed with his work that I\'m using him to install a new battery powered AC as well.',
+    initials: 'RH',
+    name: 'Rick Higgs',
+    date: '7 months ago',
+    text: 'Last week had Adam and his team convert my standard battery system over to lithium batteries hooked into my solar on my Class C RV. Adam was awesome to work with and explained everything that was needed for this switch and then the techs did an excellent job doing the work. Adam was excellent in communicating how the work was going and delivered on time. If I could give Avalon RV a 10 star rating they earned it!',
   },
   {
-    initials: 'CE',
-    name: 'Cameron Earhart',
-    date: '2 months ago',
-    text: 'The work is as good if not better than installers I\'ve seen charge twice Jason\'s rates. My wife and I couldn\'t be happier with the system Jason set us up with. The whole process from first contact to getting our rig back completed was fast and headache free. No hesitation in recommending RVsOffGrid to friends and family in the future.',
+    initials: 'BE',
+    name: 'Bob Entwisle',
+    date: '8 months ago',
+    text: 'I own a 2023 Thor Gemini motorhome. Since purchasing it, I have not been able to spend a night boondocking because the battery didn\'t have enough power even to run the fridge overnight. I contacted Adam about installing Lithium batteries and upgrading my 50-watt solar panel. He came up with a plan, answered dozens of my questions, and in 4 days installed the new setup. I could not be happier with the results and with Adam and his team\'s attention to detail.',
   },
   {
-    initials: 'CS',
-    name: 'Charles Simmons',
-    date: '26 days ago',
-    text: 'Jason & RVsOffGrid did a fantastic job installing our 24v Solar System. More importantly was the support they provided after our installation was complete. Any questions I had were answered quickly and thoroughly. Highly recommend!',
+    initials: 'JD',
+    name: 'JJ Drinkwater',
+    date: '2 years ago',
+    text: 'Avalon has worked on my beloved vintage Airstream twice, and they\'ve done expert work both times: solar power, electrical system, plumbing, propane, on-demand hot water... Adam is terrifically knowledgeable, conscientious, thorough, and possessed of a fabulous eye for detail. They are not the cheapest option, but their meticulous way of working and the splendid results are totally worth what they charge.',
   },
 ]
 
@@ -43,7 +43,7 @@ export function GoogleReviews() {
             ))}
           </div>
           <p className="text-foreground font-semibold">Excellent on Google</p>
-          <p className="text-sm text-muted-foreground">5.0 out of 5 based on 58 reviews</p>
+          <p className="text-sm text-muted-foreground">4.9 out of 5 based on 100+ reviews</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -3,18 +3,18 @@ import { Clock, CalendarX, Zap } from 'lucide-react'
 const signals = [
   {
     icon: Clock,
-    headline: "RVsOffGrid's calendar fills up fast.",
-    body: "We typically book out 2–3 weeks. The sooner you get on the schedule, the sooner you're off-grid for good.",
+    headline: "Avalon RV's calendar books out fast.",
+    body: "We typically schedule 2–3 weeks out. The sooner you get on the calendar, the sooner you're running on clean solar power.",
   },
   {
     icon: CalendarX,
-    headline: 'Only a handful of installs per week.',
-    body: "Every job gets a full day of focused attention. That means limited slots — and they go to whoever books first.",
+    headline: 'Limited install slots each week.',
+    body: "Every job gets our full focused attention. That means limited spots — and they go to whoever books first.",
   },
   {
     icon: Zap,
     headline: "Summer is peak season.",
-    body: "Demand spikes when RV season heats up. Don't wait until you need it — book now so it's done before your next trip.",
+    body: "Demand spikes when RV season hits. Don't wait until you need it — book now so your system is ready before your next trip.",
   },
 ]
 

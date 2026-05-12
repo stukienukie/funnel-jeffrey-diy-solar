@@ -5,9 +5,9 @@ export function AboutJason() {
         <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
           <div className="shrink-0">
             <img
-              src="https://rvsoffgrid.com/assets/jason-olivia-BtSE0MiI.avif"
-              alt="Jason and Olivia Orr, owners of RVsOffGrid"
-              className="w-44 h-44 rounded-2xl object-cover shadow-md"
+              src="/adam-about.jpg"
+              alt="Adam Blair, owner of Avalon RV"
+              className="w-44 h-44 rounded-2xl object-cover object-center shadow-md"
               loading="lazy"
               decoding="async"
             />
@@ -16,18 +16,18 @@ export function AboutJason() {
           <div className="flex flex-col gap-3 text-center sm:text-left">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Meet Your Installer</p>
-              <h2 className="text-2xl font-extrabold text-foreground">Jason Orr</h2>
-              <p className="text-sm text-muted-foreground">Owner · RVsOffGrid · Burleson, TX</p>
+              <h2 className="text-2xl font-extrabold text-foreground">Adam Blair</h2>
+              <p className="text-sm text-muted-foreground">Owner · Avalon RV · Benicia, CA</p>
             </div>
 
             <p className="text-muted-foreground leading-relaxed text-sm">
-              My wife Olivia and I started RVsOffGrid to help families break free from the grid.
-              When I was a kid, I traveled the USA for a year with my family in an RV — and those memories never left me.
-              Now, as a trained Victron Energy installer with 6 kids of our own, I engineer systems I&apos;d trust for my own family.
+              I&apos;ve been building and restoring RVs for over 20 years. As a Master Certified RV Technician and
+              NABCEP-certified solar installer, I&apos;ve helped 10,000+ customers across Northern California
+              get true off-grid power. Every system I build is one I&apos;d trust in my own rig.
             </p>
 
             <p className="text-xs text-muted-foreground italic border-l-2 border-primary/40 pl-3">
-              &ldquo;I truly believe excellence is doing a small thing well. I stand behind every install.&rdquo;
+              &ldquo;I was patient enough with a novice like me to explain everything he was doing so I could learn from him.&rdquo; — R.T., verified customer
             </p>
           </div>
         </div>

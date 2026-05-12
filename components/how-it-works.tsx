@@ -3,19 +3,19 @@ const steps = [
     number: '01',
     emoji: '⚡',
     title: 'Take the 60-Second Quiz',
-    description: "Tell us about your RV, how you camp, and what you want to achieve. We'll match you to the right package instantly.",
+    description: "Tell us about your RV, how you use it, and what you want to power. We'll match you to the right system instantly.",
   },
   {
     number: '02',
     emoji: '📞',
     title: 'Free Consultation Call',
-    description: "Jason calls you to learn about your rig and goals. Your quote depends on your specs — and sometimes a quick walk-around at the shop is needed to get it exactly right.",
+    description: "Adam calls you personally to understand your rig and goals. A quick shop visit in Benicia lets us design exactly the right system for you.",
   },
   {
     number: '03',
     emoji: '🔧',
     title: 'Professional Installation',
-    description: "Our Victron-certified team handles everything. Depending on the build, some systems are completed in a single day — you'll know the full timeline before we get started.",
+    description: "Our Master Certified team handles everything. Most builds are done in 2–3 weeks — you'll know the full timeline before we get started.",
   },
 ]
 
@@ -35,7 +35,6 @@ export function HowItWorks() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, index) => (
             <div key={step.number} className="relative flex flex-col items-center text-center">
-              {/* Connector line (desktop only) */}
               {index < steps.length - 1 && (
                 <div className="hidden md:block absolute top-8 left-1/2 w-full h-px bg-border" style={{ left: '60%', width: '80%' }} />
               )}

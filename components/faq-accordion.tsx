@@ -6,27 +6,27 @@ import { ChevronDown } from 'lucide-react'
 const faqs = [
   {
     question: 'How much does an RV solar system cost?',
-    answer: 'RV solar systems typically range from $2,000 to $15,000+ depending on your power needs, battery capacity, and the complexity of the install. During your free assessment call, we\'ll discuss your specific usage and give you an accurate quote with no surprises.',
+    answer: 'RV solar systems vary widely based on your power needs, battery capacity, and install complexity. During your free assessment call, Adam will walk you through your specific usage and give you an accurate quote with no surprises.',
   },
   {
     question: 'What brands do you use?',
-    answer: 'We exclusively use Victron Energy components for all our installs. Victron is the gold standard in RV solar - they offer the most reliable, efficient, and feature-rich equipment on the market. Their monitoring app lets you check your system status from anywhere.',
+    answer: 'We use Victron Energy as our primary platform — the gold standard in RV solar. We\'re also authorized dealers for Battle Born / Dragonfly Energy, Expion360, Epoch, Lithionics, and Zamp Solar. You get the best equipment available, properly installed.',
   },
   {
     question: 'How long does installation take?',
-    answer: 'Most of our installations are completed in a single day. More complex builds with multiple batteries or extensive wiring may take 2 days. We\'ll give you a clear timeline during your assessment call.',
+    answer: 'Most projects are completed within 2–3 weeks. Larger restorations may take 2–3 months, and custom builds can take up to 6 months. We\'ll give you a clear timeline before we start — no guessing.',
   },
   {
-    question: 'Do you service areas outside Burleson?',
-    answer: 'Yes! While we\'re based in Burleson, we serve the entire DFW metroplex and surrounding areas. We also occasionally travel for larger projects - just ask during your call.',
+    question: 'Do you only serve the Benicia area?',
+    answer: 'We\'re based in Benicia, CA and serve all of Northern California. We\'re the largest RV power system installer in the region. Call us to confirm your area.',
   },
   {
     question: 'Can solar power my RV air conditioner?',
-    answer: 'Absolutely! Running AC on solar is one of the most common requests we get. It requires a properly sized system with adequate battery capacity, but it\'s definitely achievable. We\'ll help you design a system that can handle your AC and all your other needs.',
+    answer: 'Absolutely — it\'s one of our most common requests. With the right battery bank and inverter, we can design a system that runs your AC off-grid. We\'ll spec it out exactly during your consultation.',
   },
   {
     question: 'What happens during the free assessment call?',
-    answer: 'It\'s a casual 15-20 minute conversation where we learn about your RV, how you camp, and what you want to achieve with solar. We\'ll answer your questions, discuss options, and if it\'s a good fit, we\'ll schedule an in-person assessment. No pressure, no hard sell.',
+    answer: 'It\'s a relaxed 15–20 minute conversation where Adam learns about your RV, how you camp, and what you want to power. He\'ll answer your questions and walk you through options. No pressure, no hard sell.',
   },
 ]
 
@@ -43,7 +43,7 @@ export function FAQAccordion() {
         <h2 className="font-heading text-3xl text-center text-foreground mb-8">
           Frequently Asked Questions
         </h2>
-        
+
         <div className="space-y-3">
           {faqs.map((faq, index) => (
             <div
@@ -61,7 +61,7 @@ export function FAQAccordion() {
                   }`}
                 />
               </button>
-              
+
               <div
                 className={`overflow-hidden transition-all duration-200 ${
                   openIndex === index ? 'max-h-96' : 'max-h-0'

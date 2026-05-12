@@ -1,14 +1,14 @@
 import Image from 'next/image'
 
 const photos = [
-  '/gallery-1-BxAI98jw.png',
-  '/gallery-2-BZATHmxh.png',
-  '/gallery-3-CloAN3ci.png',
-  '/gallery-4-Cn7JMmUk.png',
-  '/gallery-5-CE6TC3LT.png',
-  '/gallery-6-C_v2jxDv.png',
-  '/gallery-7-CNGYzqgz.png',
-  '/gallery-8-C-4X7FKz.png',
+  '/gallery-1.jpg',
+  '/gallery-2.jpg',
+  '/gallery-3.jpg',
+  '/gallery-4.jpg',
+  '/gallery-5.jpg',
+  '/gallery-6.jpg',
+  '/gallery-7.jpg',
+  '/gallery-8.jpg',
 ]
 
 export function PhotoGrid() {

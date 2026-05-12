@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckCircle2 } from 'lucide-react'
+import Script from 'next/script'
 
 interface BookingSectionProps {
   isVisible: boolean
@@ -22,17 +23,19 @@ export function BookingSection({ isVisible }: BookingSectionProps) {
         </h2>
 
         <p className="text-muted-foreground mb-8">
-          {"Select a time that works best for you and Jason will give you a call. No pressure, just honest advice."}
+          {"Select a time that works best for you and Adam will give you a call. No pressure, just honest advice."}
         </p>
 
         <div className="rounded-xl overflow-hidden border border-border">
           <iframe
-            src="https://links.monox.ai/widget/booking/TIPJcJk6n571COn8GUQa"
-            className="w-full"
-            style={{ height: 'min(700px, 80vh)', border: 'none' }}
-            title="Book a call with Jason"
+            src="https://links.monox.ai/widget/booking/Nlssq8ZwRrbqKVyuXNw4"
+            id="Nlssq8ZwRrbqKVyuXNw4_booking"
+            style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '700px' }}
+            scrolling="no"
+            title="Book a call with Adam"
           />
         </div>
+        <Script src="https://links.monox.ai/js/form_embed.js" strategy="afterInteractive" />
       </div>
     </section>
   )

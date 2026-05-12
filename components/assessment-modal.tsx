@@ -4,8 +4,8 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { X, ChevronLeft, Check } from 'lucide-react'
 
 // ── Config ──────────────────────────────────────────────────────────────────
-const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/nvTDFkvOe2lKSzq3JWAo/webhook-trigger/0d4fd632-f13a-436b-9c47-abde0c365336'
-const BOOKING_URL = 'https://links.monox.ai/widget/booking/TIPJcJk6n571COn8GUQa'
+const GHL_WEBHOOK_URL = '/api/submit'
+const BOOKING_URL = 'https://links.monox.ai/widget/booking/Nlssq8ZwRrbqKVyuXNw4'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type Step = 'contact' | 'rvType' | 'goal' | 'qualifier' | 'booking'
@@ -115,8 +115,9 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
         last_name: contact.lastName,
         phone: contact.phone,
         email: contact.email,
+        step: 'contact-captured',
         tags: 'rv-solar-funnel,quiz-started',
-        source: 'RVsOffGrid Funnel',
+        source: 'Avalon RV Funnel',
       }),
     }).catch(() => {})
 
@@ -152,10 +153,10 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
       ``,
       `RV Type:       ${rvTypeLabel}`,
       `#1 Goal:       ${goalLabel}`,
-      `Can visit Burleson TX: ${shopVisitLabel}`,
+      `Can visit Benicia CA: ${shopVisitLabel}`,
       `Budget ready:  ${budgetLabel}`,
       ``,
-      `Source: RVsOffGrid Funnel`,
+      `Source: Avalon RV Funnel`,
     ].join('\n')
 
     try {
@@ -169,11 +170,12 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
           email: contact.email,
           rv_type: rvTypeLabel,
           goal: goalLabel,
-          can_visit_burleson: shopVisitLabel,
+          can_visit_benicia: shopVisitLabel,
           budget_ready: budgetLabel,
+          step: 'quiz-complete',
           notes,
           tags: 'rv-solar-funnel,quiz-complete',
-          source: 'RVsOffGrid Funnel',
+          source: 'Avalon RV Funnel',
         }),
       })
     } catch {
@@ -255,26 +257,26 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
           {/* ── CONTACT (pre-req gate) ───────────────────────────────── */}
           {step === 'contact' && (
             <div>
-              {/* Jason intro hook */}
+              {/* Adam intro hook */}
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="relative mb-4">
                   <img
-                    src="https://rvsoffgrid.com/assets/jason-olivia-BtSE0MiI.avif"
-                    alt="Jason Orr"
-                    className="w-20 h-20 rounded-full object-cover object-top shadow-md border-2 border-primary/30"
+                    src="/adam-about.jpg"
+                    alt="Adam Blair"
+                    className="w-20 h-20 rounded-full object-cover object-center shadow-md border-2 border-primary/30"
                     loading="eager"
                     decoding="async"
                   />
                   <span className="absolute -bottom-1 -right-1 text-lg">⚡</span>
                 </div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-2">
-                  Before we connect you directly with Jason...
+                  Before we connect you directly with Adam...
                 </p>
                 <h2 className="font-heading text-2xl text-foreground mb-2 leading-tight">
                   Take this 60-second quiz to find your perfect solar setup
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-xs">
-                  So when Jason calls, he already knows exactly what your RV needs — no guessing, no wasted time.
+                  So when Adam calls, he already knows exactly what your RV needs — no guessing, no wasted time.
                 </p>
               </div>
 
@@ -447,13 +449,13 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
               {/* Shop visit question */}
               <div className="mb-5">
                 <div className="bg-muted/50 rounded-xl p-4 mb-3 border border-border">
-                  <p className="text-sm text-foreground font-medium mb-1">📍 Jason works from his shop in Burleson, TX</p>
+                  <p className="text-sm text-foreground font-medium mb-1">📍 Adam works from his shop in Benicia, CA</p>
                   <p className="text-sm text-muted-foreground">
-                    Every install starts with a walk-around of your RV at the shop so Jason can design exactly the right system for your rig.
+                    Every install starts with a walk-around of your RV at the shop so Adam can design exactly the right system for your rig.
                   </p>
                 </div>
                 <p className="text-sm font-medium text-foreground mb-2">
-                  Are you able to bring your RV to Burleson, TX?
+                  Are you able to bring your RV to Benicia, CA?
                 </p>
                 <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
                   {[
@@ -480,7 +482,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                 <div className="bg-muted/50 rounded-xl p-4 mb-3 border border-border">
                   <p className="text-sm text-foreground font-medium mb-1">💰 Investment starts around $4,000</p>
                   <p className="text-sm text-muted-foreground">
-                    Every system is custom-built for your RV. The exact price depends on your specs — Jason will walk you through everything on the call.
+                    Every system is custom-built for your RV. The exact price depends on your specs — Adam will walk you through everything on the call.
                   </p>
                 </div>
                 <p className="text-sm font-medium text-foreground mb-2">
@@ -514,7 +516,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
-                Book My Call with Jason →
+                Book My Call with Adam →
               </button>
               <p className="text-xs text-center text-muted-foreground mt-2">
                 Free · No pressure · 15–20 minute call
@@ -531,18 +533,20 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   {`You're in, ${contact.firstName}!`}
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Pick a time below and Jason will give you a call to walk through everything.
+                  Pick a time below and Adam will give you a call to walk through everything.
                 </p>
               </div>
 
               <div className="rounded-xl overflow-hidden border border-border">
                 <iframe
                   src={BOOKING_URL}
-                  className="w-full"
-                  style={{ height: 'min(560px, 55vh)', border: 'none' }}
-                  title="Book a call with Jason"
+                  id="Nlssq8ZwRrbqKVyuXNw4_modal"
+                  style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '560px' }}
+                  scrolling="no"
+                  title="Book a call with Adam"
                 />
               </div>
+              <script src="https://links.monox.ai/js/form_embed.js" async />
             </div>
           )}
 

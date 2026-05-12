@@ -1,10 +1,10 @@
 'use client'
 
 const stats = [
-  { number: '150+', label: 'Installs Done', isReview: false },
-  { number: '5.0★', label: '58 Google Reviews', isReview: true },
-  { number: '100%', label: 'Victron Certified', isReview: false },
-  { number: '1-Day', label: 'Typical Install', isReview: false },
+  { number: '10,000+', label: 'Happy Customers', isReview: false },
+  { number: '4.9★', label: '100+ Google Reviews', isReview: true },
+  { number: '20+', label: 'Years in Business', isReview: false },
+  { number: '#1', label: 'In Northern California', isReview: false },
 ]
 
 export function StatsRow() {
