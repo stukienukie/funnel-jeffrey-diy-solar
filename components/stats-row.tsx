@@ -2,7 +2,7 @@
 
 const stats = [
   { number: '60%+', label: 'Avg. Savings vs. Contractors', isReview: false },
-  { number: '4.9★', label: '50+ Google Reviews', isReview: true },
+  { number: '5.0★', label: '9 Google Reviews', isReview: true },
   { number: 'NABCEP', label: 'Certified Solar Professional', isReview: false },
   { number: 'All 50', label: 'States Served Remotely', isReview: false },
 ]

@@ -47,12 +47,33 @@ export function ProblemSection() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-foreground font-medium text-lg">
-            There&apos;s a better way — and it doesn&apos;t require hiring a $40,000 contractor.
+        <div className="mt-10">
+          <p className="text-center text-foreground font-medium text-lg mb-6">
+            Here&apos;s what the numbers actually look like on a 10kW system over 25 years:
           </p>
-          <p className="text-muted-foreground text-sm mt-1">
-            With the right guidance, a DIY solar install is entirely achievable. Jeffrey has helped hundreds of homeowners do exactly that.
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Grid Utility', cost: '$1.00+', unit: '/kWh', sub: 'And rising every year', highlight: false, bad: true },
+              { label: 'Contractor Solar', cost: '$0.081', unit: '/kWh', sub: '$25,000 installed', highlight: false, bad: false },
+              { label: 'DIY Solar Assist', cost: '$0.041', unit: '/kWh', sub: '$12,900 in equipment', highlight: true, bad: false },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className={`rounded-xl border p-4 text-center ${item.highlight ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}
+              >
+                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${item.highlight ? 'text-primary' : 'text-muted-foreground'}`}>
+                  {item.label}
+                </p>
+                <p className={`font-heading text-3xl md:text-4xl ${item.bad ? 'text-destructive' : item.highlight ? 'text-primary' : 'text-foreground'}`}>
+                  {item.cost}
+                </p>
+                <p className="text-xs text-muted-foreground">{item.unit} lifetime</p>
+                <p className="text-xs text-muted-foreground mt-1">{item.sub}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-muted-foreground text-sm mt-4">
+            Based on 14,143 kWh/yr production, 0.5% annual degradation, 25-year system life.
           </p>
         </div>
       </div>

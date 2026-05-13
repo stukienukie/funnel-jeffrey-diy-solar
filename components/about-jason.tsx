@@ -16,7 +16,7 @@ export function AboutJason() {
           <div className="flex flex-col gap-3 text-center sm:text-left">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Meet Your Guide</p>
-              <h2 className="text-2xl font-extrabold text-foreground">Jeffrey</h2>
+              <h2 className="text-2xl font-extrabold text-foreground">Jeffrey R. Jankiewicz</h2>
               <p className="text-sm text-muted-foreground">Owner · DIY Solar Assist · Rome, NY</p>
             </div>
 

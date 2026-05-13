@@ -2,22 +2,22 @@ import { Star } from 'lucide-react'
 
 const reviews = [
   {
-    initials: 'MK',
-    name: 'Mike K.',
-    date: '3 months ago',
-    text: 'I got quotes from three local installers ranging from $28,000 to $34,000. Jeffrey designed my 10kW system, handled all the permit drawings, and guided me through the utility interconnection process. Total cost for components plus his service was under $14,000. The inspection passed first try. Cannot recommend this enough.',
+    initials: 'PS',
+    name: 'Paul Shirk',
+    date: '4 months ago',
+    text: 'DIY Solar Assist is top notch. Very knowledgeable and professional. We did a large solar install and Jeff guided us through every step — design, permitting, and getting it live. Highly recommend.',
   },
   {
-    initials: 'SR',
-    name: 'Sandra R.',
-    date: '5 months ago',
-    text: 'I was completely overwhelmed before finding Jeffrey. I had watched every YouTube video and still felt lost. He sized my system correctly for my usage, explained exactly which equipment to buy at contractor pricing, and was available by phone during my install weekend. My system has been running flawlessly for four months. Best money I ever spent.',
+    initials: 'LM',
+    name: 'Luis Martinez',
+    date: '6 months ago',
+    text: 'Jeff was a lifesaver when trying to get official plans and engineering drawings for my permit application. He is professional, great at communicating, and worth every penny. He was also able to assist me with my electric company\'s interconnection application. If you\'re looking for a solid partner for your DIY solar project, I can\'t recommend anyone else.',
   },
   {
-    initials: 'DT',
-    name: 'Dave T.',
-    date: '8 months ago',
-    text: 'Jeffrey is the real deal. NABCEP certified, knows the NEC code cold, and actually picks up the phone. The permit package he built for my county was perfect — inspector approved it without a single revision. I saved roughly $19,000 compared to contractor quotes. The whole process took about 6 weeks from first call to permission to operate.',
+    initials: 'AP',
+    name: 'Arjun Pathria',
+    date: '1 year ago',
+    text: 'DIY Solar, Is a great company for solar installations. I would highly recommend to everyone. Thank you so much for saving my money by making me to go solar.',
   },
 ]
 
@@ -43,7 +43,7 @@ export function GoogleReviews() {
             ))}
           </div>
           <p className="text-foreground font-semibold">Excellent on Google</p>
-          <p className="text-sm text-muted-foreground">4.9 out of 5 based on 50+ reviews</p>
+          <p className="text-sm text-muted-foreground">5.0 out of 5 based on 9 reviews</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
