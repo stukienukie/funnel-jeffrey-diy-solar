@@ -10,19 +10,19 @@
   --card-foreground: #1a1a1a;
   --popover: #FFFFFF;
   --popover-foreground: #1a1a1a;
-  --primary: #E8730E;
+  --primary: #049DD9;
   --primary-foreground: #FFFFFF;
-  --secondary: #4A8DB8;
-  --secondary-foreground: #FFFFFF;
+  --secondary: #F2B705;
+  --secondary-foreground: #1a1a1a;
   --muted: #F7F8FA;
   --muted-foreground: #6b7280;
-  --accent: #4A8DB8;
-  --accent-foreground: #FFFFFF;
+  --accent: #e0f4fc;
+  --accent-foreground: #0a3040;
   --destructive: #ef4444;
   --destructive-foreground: #FFFFFF;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --ring: #E8730E;
+  --ring: #049DD9;
   --radius: 0.625rem;
 }
 
@@ -101,4 +101,11 @@
 
 .animate-scale-in {
   animation: scaleIn 0.2s ease-out forwards;
+}
+
+.stat-glow {
+  text-shadow:
+    0 0 12px #F2B705cc,
+    0 0 28px #F2B70588,
+    0 0 52px #F2B70544;
 }

@@ -15,7 +15,7 @@ const steps = [
     number: '03',
     emoji: '🔧',
     title: 'Professional Installation',
-    description: "Our Master Certified team handles everything. Most builds are done in 2–3 weeks — you'll know the full timeline before we get started.",
+    description: "Our Victron-certified team handles everything. Most builds are done in 2–3 weeks — you'll know the full timeline before we get started.",
   },
 ]
 

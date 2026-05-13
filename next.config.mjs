@@ -6,7 +6,8 @@ const nextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
-      { protocol: 'https', hostname: 'rvsoffgrid.com' },
+      { protocol: 'https', hostname: 'avalon-rv.com' },
+      { protocol: 'https', hostname: 'b4306208.smushcdn.com' },
     ],
   },
 }

@@ -21,13 +21,13 @@ export function AboutJason() {
             </div>
 
             <p className="text-muted-foreground leading-relaxed text-sm">
-              I&apos;ve been building and restoring RVs for over 20 years. As a Master Certified RV Technician and
-              NABCEP-certified solar installer, I&apos;ve helped 10,000+ customers across Northern California
+              I&apos;ve been building and restoring RVs for 18 years. As a Certified Victron Energy Professional,
+              I&apos;ve helped 3,000+ customers across the SF Bay Area and Northern California
               get true off-grid power. Every system I build is one I&apos;d trust in my own rig.
             </p>
 
             <p className="text-xs text-muted-foreground italic border-l-2 border-primary/40 pl-3">
-              &ldquo;I was patient enough with a novice like me to explain everything he was doing so I could learn from him.&rdquo; — R.T., verified customer
+              &ldquo;Adam was patient enough with a novice like me to explain everything he was doing so I could learn from him.&rdquo; — R.T., verified customer
             </p>
           </div>
         </div>

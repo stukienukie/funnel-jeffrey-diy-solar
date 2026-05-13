@@ -9,7 +9,7 @@ export function Header() {
           alt="Avalon RV solar installation"
           fill
           priority
-          className="object-cover object-top"
+          className="object-cover object-left-top md:object-[20%_15%]"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/10" />
@@ -36,7 +36,7 @@ export function Header() {
           </h1>
 
           <p className="text-muted-foreground text-base md:text-xl max-w-2xl mx-auto text-pretty leading-snug">
-            Northern California&apos;s #1 RV solar installer. Master Certified, Victron-trained, 20+ years experience.
+            SF Bay Area&apos;s trusted RV solar installer. Certified Victron Energy Professional, 18 years experience.
             Endless off-grid power — professionally installed.
           </p>
         </div>

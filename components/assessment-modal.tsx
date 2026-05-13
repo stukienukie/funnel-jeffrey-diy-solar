@@ -106,20 +106,26 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
       return
     }
 
-    // Capture contact immediately — don't wait for quiz completion
-    fetch(GHL_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        first_name: contact.firstName,
-        last_name: contact.lastName,
-        phone: contact.phone,
-        email: contact.email,
-        step: 'contact-captured',
-        tags: 'rv-solar-funnel,quiz-started',
-        source: 'Avalon RV Funnel',
-      }),
-    }).catch(() => {})
+    setIsSubmitting(true)
+
+    // Await so the contact is guaranteed sent before advancing
+    try {
+      await fetch(GHL_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: contact.firstName,
+          last_name: contact.lastName,
+          phone: contact.phone,
+          email: contact.email,
+          step: 'contact-captured',
+          tags: 'rv-solar-funnel,quiz-started',
+          source: 'Avalon RV Funnel',
+        }),
+      })
+    } catch {
+      // Non-blocking — advance regardless
+    }
 
     window.dataLayer = window.dataLayer || []
     window.dataLayer.push({
@@ -133,6 +139,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
       window.fbq('track', 'Lead')
     }
 
+    setIsSubmitting(false)
     setStep('rvType')
   }
 
@@ -318,9 +325,10 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
                 <button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-4 px-8 rounded-xl transition-colors text-lg cursor-pointer mt-2"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-bold py-4 px-8 rounded-2xl transition-all text-lg cursor-pointer mt-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Start My Assessment →
+                  {isSubmitting ? 'Sending...' : 'Start My Assessment →'}
                 </button>
                 <p className="text-xs text-center text-muted-foreground">
                   Your info is secure and will never be shared.
@@ -375,9 +383,9 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   const ready = answers.rvType && (answers.rvType !== 'other' || (answers.rvTypeOther ?? '').trim())
                   if (ready) setStep('goal')
                 }}
-                className={`w-full py-4 px-8 rounded-xl font-semibold text-lg transition-colors ${
+                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
                   answers.rvType && (answers.rvType !== 'other' || (answers.rvTypeOther ?? '').trim())
-                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer'
+                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
@@ -422,9 +430,9 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
               <button
                 onClick={() => answers.goal && setStep('qualifier')}
-                className={`w-full py-4 px-8 rounded-xl font-semibold text-lg transition-colors ${
+                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
                   answers.goal
-                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer'
+                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
@@ -510,9 +518,9 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
               <button
                 onClick={() => answers.shopVisit && answers.budgetReady && handleQualifierComplete()}
-                className={`w-full py-4 px-8 rounded-xl font-semibold text-lg transition-colors ${
+                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
                   answers.shopVisit && answers.budgetReady
-                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer'
+                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >

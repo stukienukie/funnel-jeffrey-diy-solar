@@ -1,7 +1,7 @@
 const pains = [
   {
     emoji: '😤',
-    headline: 'The generator goes off at 6am.',
+    headline: 'The generator goes on at 6am.',
     body: 'Your neighbors hate you. You hate it too. But without hookups, what choice do you have?',
   },
   {

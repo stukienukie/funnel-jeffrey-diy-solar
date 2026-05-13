@@ -8,17 +8,18 @@ const bebasNeue = Bebas_Neue({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-bebas-neue',
+  display: 'swap',
 })
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-dm-sans',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'Avalon RV — RV Solar Installations in Benicia, CA',
-  description: "Northern California's #1 RV solar installer. Master Certified, 20+ years experience, 10,000+ happy customers. Get your free solar assessment today!",
-  generator: 'v0.app',
+  description: "SF Bay Area's trusted RV solar installer. Certified Victron Energy Professional, 18 years experience, 3,000+ happy customers. Get your free solar assessment today!",
   icons: {
     icon: [
       { url: '/icon-light-32x32.png', sizes: '32x32', type: 'image/png' },
@@ -36,16 +37,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${bebasNeue.variable} ${dmSans.variable} bg-background`}>
       <head>
-        <Script id="gtm-script" strategy="afterInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-KMTMCB29');`}
-        </Script>
-        {/* DNS prefetch for external assets */}
-        <link rel="dns-prefetch" href="https://avalonrv.com" />
+        {/* Preconnect to tracking origins */}
         <link rel="preconnect" href="https://connect.facebook.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.clarity.ms" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://links.monox.ai" />
 
         {/* Microsoft Clarity */}
         <Script id="clarity-script" strategy="afterInteractive">
@@ -53,10 +48,10 @@ export default function RootLayout({
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-          })(window,document,"clarity","script","wppi06f6n9");`}
+          })(window,document,"clarity","script","wq71ins5ix");`}
         </Script>
 
-        {/* Meta Pixel — base code */}
+        {/* Meta Pixel */}
         <Script id="meta-pixel" strategy="afterInteractive">
           {`!function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -66,24 +61,16 @@ export default function RootLayout({
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window,document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init','1474505240792444');
+          fbq('init','910082895115158');
           fbq('track','PageView');`}
         </Script>
         <noscript>
           <img height="1" width="1" style={{ display: 'none' }}
-            src="https://www.facebook.com/tr?id=1474505240792444&ev=PageView&noscript=1"
+            src="https://www.facebook.com/tr?id=910082895115158&ev=PageView&noscript=1"
           />
         </noscript>
       </head>
       <body className="font-sans antialiased">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-KMTMCB29"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
