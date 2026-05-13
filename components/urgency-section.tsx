@@ -3,18 +3,18 @@ import { Clock, CalendarX, Zap } from 'lucide-react'
 const signals = [
   {
     icon: Clock,
-    headline: "Avalon RV's calendar books out fast.",
-    body: "We typically schedule 2–3 weeks out. The sooner you get on the calendar, the sooner you're running on clean solar power.",
+    headline: "Jeffrey's consultation slots fill up fast.",
+    body: "He works with a limited number of clients at a time so every homeowner gets real attention. Spots go to whoever books first.",
   },
   {
     icon: CalendarX,
-    headline: 'Limited install slots each week.',
-    body: "Every job gets our full focused attention. That means limited spots — and they go to whoever books first.",
+    headline: 'Permits take time — start now.',
+    body: "Most counties take 4–8 weeks to approve a solar permit. Every month you wait is another month of full electricity bills.",
   },
   {
     icon: Zap,
-    headline: "Summer is peak season.",
-    body: "Demand spikes when RV season hits. Don't wait until you need it — book now so your system is ready before your next trip.",
+    headline: 'The 30% federal tax credit has a deadline.',
+    body: "The ITC is available now, but you need to have your system installed and operational within the tax year to claim it. Don't leave thousands on the table.",
   },
 ]
 
@@ -27,10 +27,10 @@ export function UrgencySection() {
             ⚠️ Limited Availability
           </div>
           <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-3">
-            Don&apos;t Wait Until Your Next Trip
+            Every Month You Wait Is Money Lost
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Every week you wait is another week of generator noise, hookup fees, and missed boondocking spots.
+            The longer you stay on the grid, the more you pay. Your system starts paying you back the day it turns on.
           </p>
         </div>
 

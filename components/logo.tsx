@@ -4,8 +4,8 @@ export function Logo() {
   return (
     <div className="flex items-center justify-center py-10">
       <Image
-        src="/avalon-logo.webp"
-        alt="Avalon RV"
+        src="/jeffrey-logo.png"
+        alt="DIY Solar Assist"
         width={320}
         height={96}
         priority

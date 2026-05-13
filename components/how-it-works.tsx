@@ -1,21 +1,21 @@
 const steps = [
   {
     number: '01',
-    emoji: '⚡',
+    emoji: '📋',
     title: 'Take the 60-Second Quiz',
-    description: "Tell us about your RV, how you use it, and what you want to power. We'll match you to the right system instantly.",
+    description: "Tell us about your home, your energy goals, and your situation. Jeffrey reviews every submission personally before your call.",
   },
   {
     number: '02',
     emoji: '📞',
-    title: 'Free Consultation Call',
-    description: "Adam calls you personally to understand your rig and goals. A quick shop visit in Benicia lets us design exactly the right system for you.",
+    title: 'Free System Design Call',
+    description: "Jeffrey calls you to size your system, walk through your permit requirements, and explain exactly what your install will involve — no pressure, no guessing.",
   },
   {
     number: '03',
-    emoji: '🔧',
-    title: 'Professional Installation',
-    description: "Our Victron-certified team handles everything. Most builds are done in 2–3 weeks — you'll know the full timeline before we get started.",
+    emoji: '☀️',
+    title: 'Install with Full Support',
+    description: "You get a complete permit package, custom system design, procurement guidance, and hands-on installation support from start to utility sign-off.",
   },
 ]
 
@@ -28,7 +28,7 @@ export function HowItWorks() {
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg">
-            From curious to fully off-grid in 3 simple steps
+            From confused to solar-powered in 3 simple steps
           </p>
         </div>
 

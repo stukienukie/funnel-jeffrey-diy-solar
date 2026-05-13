@@ -8,7 +8,7 @@ const GHL_WEBHOOK_URL = '/api/submit'
 const BOOKING_URL = 'https://links.monox.ai/widget/booking/Nlssq8ZwRrbqKVyuXNw4'
 
 // ── Types ────────────────────────────────────────────────────────────────────
-type Step = 'contact' | 'rvType' | 'goal' | 'qualifier' | 'booking'
+type Step = 'contact' | 'propertyType' | 'goal' | 'qualifier' | 'booking'
 
 interface ContactData {
   firstName: string
@@ -18,10 +18,10 @@ interface ContactData {
 }
 
 interface Answers {
-  rvType: string
-  rvTypeOther?: string
+  propertyType: string
+  propertyTypeOther?: string
   goal: string
-  shopVisit: string
+  ownsHome: string
   budgetReady: string
 }
 
@@ -32,19 +32,18 @@ interface AssessmentModalProps {
 }
 
 // ── Question data ─────────────────────────────────────────────────────────────
-const rvTypeOptions = [
-  { value: 'class-a', label: 'Class A Motorhome', emoji: '🚌' },
-  { value: 'class-c', label: 'Class C Motorhome', emoji: '🚐' },
-  { value: 'fifth-wheel', label: '5th Wheel', emoji: '🏠' },
-  { value: 'travel-trailer', label: 'Travel Trailer', emoji: '🚗' },
+const propertyTypeOptions = [
+  { value: 'single-family', label: 'Single-Family Home', emoji: '🏠' },
+  { value: 'multi-family', label: 'Multi-Family / Duplex', emoji: '🏘️' },
+  { value: 'small-business', label: 'Small Business / Commercial', emoji: '🏢' },
   { value: 'other', label: 'Other', emoji: '⚡' },
 ]
 
 const goalOptions = [
-  { value: 'run-ac', label: 'Run my AC off-grid', sub: 'Stay cool anywhere without hookups', emoji: '❄️' },
-  { value: 'ditch-generator', label: 'Ditch the generator for good', sub: 'No more noise, fuel costs, or fumes', emoji: '🔇' },
-  { value: 'go-anywhere', label: 'Go anywhere, stay as long as I want', sub: 'True off-grid freedom with zero limits', emoji: '🗺️' },
-  { value: 'cut-costs', label: 'Cut my hookup costs', sub: 'Stop paying campground electric fees', emoji: '💰' },
+  { value: 'cut-bill', label: 'Cut my electric bill by 60%+', sub: 'Stop giving money to the utility company', emoji: '💸' },
+  { value: 'energy-independence', label: 'Achieve energy independence', sub: 'Battery backup, self-reliance, no outages', emoji: '🔋' },
+  { value: 'protect-from-rates', label: 'Protect against rising utility rates', sub: 'Lock in your energy cost for 25+ years', emoji: '📈' },
+  { value: 'home-value', label: 'Add value to my home', sub: 'Solar increases resale value significantly', emoji: '🏡' },
 ]
 
 declare global {
@@ -57,12 +56,12 @@ declare global {
 export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalProps) {
   const [step, setStep] = useState<Step>('contact')
   const [contact, setContact] = useState<ContactData>({ firstName: '', lastName: '', phone: '', email: '' })
-  const [answers, setAnswers] = useState<Answers>({ rvType: '', rvTypeOther: '', goal: '', shopVisit: '', budgetReady: '' })
+  const [answers, setAnswers] = useState<Answers>({ propertyType: '', propertyTypeOther: '', goal: '', ownsHome: '', budgetReady: '' })
   const [errors, setErrors] = useState<Partial<ContactData>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isShaking, setIsShaking] = useState(false)
 
-  const STEPS: Step[] = ['contact', 'rvType', 'goal', 'qualifier', 'booking']
+  const STEPS: Step[] = ['contact', 'propertyType', 'goal', 'qualifier', 'booking']
   const stepIndex = STEPS.indexOf(step)
 
   useEffect(() => {
@@ -81,7 +80,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     if (isOpen) {
       setStep('contact')
       setContact({ firstName: '', lastName: '', phone: '', email: '' })
-      setAnswers({ rvType: '', goal: '', shopVisit: '', budgetReady: '' })
+      setAnswers({ propertyType: '', goal: '', ownsHome: '', budgetReady: '' })
       setErrors({})
     }
   }, [isOpen])
@@ -119,8 +118,8 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
           phone: contact.phone,
           email: contact.email,
           step: 'contact-captured',
-          tags: 'rv-solar-funnel,quiz-started',
-          source: 'Avalon RV Funnel',
+          tags: 'diy-solar-funnel,quiz-started',
+          source: 'DIY Solar Assist Funnel',
         }),
       })
     } catch {
@@ -140,30 +139,30 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     }
 
     setIsSubmitting(false)
-    setStep('rvType')
+    setStep('propertyType')
   }
 
   // Push final answers to GHL on qualifier completion
   const handleQualifierComplete = async () => {
-    const rvTypeLabel = answers.rvType === 'other'
-      ? (answers.rvTypeOther || 'Other')
-      : rvTypeOptions.find(o => o.value === answers.rvType)?.label ?? answers.rvType
+    const propertyTypeLabel = answers.propertyType === 'other'
+      ? (answers.propertyTypeOther || 'Other')
+      : propertyTypeOptions.find(o => o.value === answers.propertyType)?.label ?? answers.propertyType
 
     const goalLabel = goalOptions.find(o => o.value === answers.goal)?.label ?? answers.goal
 
-    const shopVisitLabel = answers.shopVisit === 'yes' ? 'Yes, no problem' : 'Not sure yet'
+    const ownsHomeLabel = answers.ownsHome === 'yes' ? 'Yes, I own my home' : 'Renting / Not sure'
     const budgetLabel = answers.budgetReady === 'yes' ? "Yes, ready to invest" : 'Needs to think about it'
 
     const notes = [
-      `=== RV Solar Funnel — Quiz Results ===`,
+      `=== DIY Solar Assist Funnel — Quiz Results ===`,
       `Submitted: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} (CST)`,
       ``,
-      `RV Type:       ${rvTypeLabel}`,
+      `Property Type: ${propertyTypeLabel}`,
       `#1 Goal:       ${goalLabel}`,
-      `Can visit Benicia CA: ${shopVisitLabel}`,
+      `Owns home:     ${ownsHomeLabel}`,
       `Budget ready:  ${budgetLabel}`,
       ``,
-      `Source: Avalon RV Funnel`,
+      `Source: DIY Solar Assist Funnel`,
     ].join('\n')
 
     try {
@@ -175,14 +174,14 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
           last_name: contact.lastName,
           phone: contact.phone,
           email: contact.email,
-          rv_type: rvTypeLabel,
+          property_type: propertyTypeLabel,
           goal: goalLabel,
-          can_visit_benicia: shopVisitLabel,
+          owns_home: ownsHomeLabel,
           budget_ready: budgetLabel,
           step: 'quiz-complete',
           notes,
-          tags: 'rv-solar-funnel,quiz-complete',
-          source: 'Avalon RV Funnel',
+          tags: 'diy-solar-funnel,quiz-complete',
+          source: 'DIY Solar Assist Funnel',
         }),
       })
     } catch {
@@ -192,9 +191,9 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     window.dataLayer = window.dataLayer || []
     window.dataLayer.push({
       event: 'quiz_complete',
-      rv_type: answers.rvType,
+      property_type: answers.propertyType,
       goal: answers.goal,
-      shop_visit: answers.shopVisit,
+      owns_home: answers.ownsHome,
       budget_ready: answers.budgetReady,
     })
 
@@ -205,7 +204,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
   if (!isOpen) return null
 
   // Progress bar — only for quiz steps (not contact, not booking)
-  const quizSteps: Step[] = ['rvType', 'goal', 'qualifier']
+  const quizSteps: Step[] = ['propertyType', 'goal', 'qualifier']
   const quizIndex = quizSteps.indexOf(step)
   const showProgress = quizIndex !== -1
 
@@ -264,26 +263,26 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
           {/* ── CONTACT (pre-req gate) ───────────────────────────────── */}
           {step === 'contact' && (
             <div>
-              {/* Adam intro hook */}
+              {/* Jeffrey intro hook */}
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="relative mb-4">
                   <img
-                    src="/adam-about.jpg"
-                    alt="Adam Blair"
+                    src="/jeffrey-about.png"
+                    alt="Jeffrey"
                     className="w-20 h-20 rounded-full object-cover object-center shadow-md border-2 border-primary/30"
                     loading="eager"
                     decoding="async"
                   />
-                  <span className="absolute -bottom-1 -right-1 text-lg">⚡</span>
+                  <span className="absolute -bottom-1 -right-1 text-lg">☀️</span>
                 </div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-2">
-                  Before we connect you directly with Adam...
+                  Before we connect you directly with Jeffrey...
                 </p>
                 <h2 className="font-heading text-2xl text-foreground mb-2 leading-tight">
-                  Take this 60-second quiz to find your perfect solar setup
+                  Take this 60-second quiz to design your solar system
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-xs">
-                  So when Adam calls, he already knows exactly what your RV needs — no guessing, no wasted time.
+                  So when Jeffrey calls, he already knows your home and goals — no guessing, no wasted time.
                 </p>
               </div>
 
@@ -337,41 +336,41 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
             </div>
           )}
 
-          {/* ── STEP 1: RV TYPE ─────────────────────────────────────── */}
-          {step === 'rvType' && (
+          {/* ── STEP 1: PROPERTY TYPE ───────────────────────────────── */}
+          {step === 'propertyType' && (
             <div>
               <div className="text-center mb-6">
-                <div className="text-4xl mb-3">🚌</div>
+                <div className="text-4xl mb-3">🏠</div>
                 <h2 className="font-heading text-2xl text-foreground mb-1">
-                  What type of RV do you have?
+                  What type of property is this for?
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  This helps us design the right system for your rig
+                  This helps Jeffrey design the right system for your situation
                 </p>
               </div>
 
               <div className="space-y-2 mb-6">
-                {rvTypeOptions.map((opt) => (
+                {propertyTypeOptions.map((opt) => (
                   <button
                     key={opt.value}
-                    onClick={() => setAnswers({ ...answers, rvType: opt.value, rvTypeOther: '' })}
+                    onClick={() => setAnswers({ ...answers, propertyType: opt.value, propertyTypeOther: '' })}
                     className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer text-left ${
-                      answers.rvType === opt.value
+                      answers.propertyType === opt.value
                         ? 'border-primary bg-primary/5 shadow-sm'
                         : 'border-input hover:border-primary/50 hover:bg-muted/40'
                     }`}
                   >
                     <span className="text-2xl w-8 text-center">{opt.emoji}</span>
                     <span className="font-medium text-foreground flex-1">{opt.label}</span>
-                    {answers.rvType === opt.value && <Check className="w-4 h-4 text-primary" />}
+                    {answers.propertyType === opt.value && <Check className="w-4 h-4 text-primary" />}
                   </button>
                 ))}
-                {answers.rvType === 'other' && (
+                {answers.propertyType === 'other' && (
                   <input
                     type="text"
-                    placeholder="Tell us what type of RV you have..."
-                    value={answers.rvTypeOther ?? ''}
-                    onChange={(e) => setAnswers({ ...answers, rvTypeOther: e.target.value })}
+                    placeholder="Describe your property type..."
+                    value={answers.propertyTypeOther ?? ''}
+                    onChange={(e) => setAnswers({ ...answers, propertyTypeOther: e.target.value })}
                     className="w-full px-4 py-3 rounded-lg border border-primary bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                     autoFocus
                   />
@@ -380,11 +379,11 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
               <button
                 onClick={() => {
-                  const ready = answers.rvType && (answers.rvType !== 'other' || (answers.rvTypeOther ?? '').trim())
+                  const ready = answers.propertyType && (answers.propertyType !== 'other' || (answers.propertyTypeOther ?? '').trim())
                   if (ready) setStep('goal')
                 }}
                 className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
-                  answers.rvType && (answers.rvType !== 'other' || (answers.rvTypeOther ?? '').trim())
+                  answers.propertyType && (answers.propertyType !== 'other' || (answers.propertyTypeOther ?? '').trim())
                     ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
@@ -454,27 +453,27 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                 </p>
               </div>
 
-              {/* Shop visit question */}
+              {/* Homeowner question */}
               <div className="mb-5">
                 <div className="bg-muted/50 rounded-xl p-4 mb-3 border border-border">
-                  <p className="text-sm text-foreground font-medium mb-1">📍 Adam works from his shop in Benicia, CA</p>
+                  <p className="text-sm text-foreground font-medium mb-1">🌎 Jeffrey serves all 50 states — 100% remotely</p>
                   <p className="text-sm text-muted-foreground">
-                    Every install starts with a walk-around of your RV at the shop so Adam can design exactly the right system for your rig.
+                    Everything is handled via phone, email, and video — system design, permit drawings, and installation support from anywhere in the country.
                   </p>
                 </div>
                 <p className="text-sm font-medium text-foreground mb-2">
-                  Are you able to bring your RV to Benicia, CA?
+                  Do you own the property where solar will be installed?
                 </p>
                 <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
                   {[
-                    { value: 'yes', label: '✅ Yes, no problem' },
-                    { value: 'maybe', label: '🤔 Not sure yet' },
+                    { value: 'yes', label: '✅ Yes, I own it' },
+                    { value: 'maybe', label: '🤔 Renting / Not sure' },
                   ].map((opt) => (
                     <button
                       key={opt.value}
-                      onClick={() => setAnswers({ ...answers, shopVisit: opt.value })}
+                      onClick={() => setAnswers({ ...answers, ownsHome: opt.value })}
                       className={`w-full p-3 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
-                        answers.shopVisit === opt.value
+                        answers.ownsHome === opt.value
                           ? 'border-primary bg-primary/5 text-foreground'
                           : 'border-input hover:border-primary/50 text-muted-foreground'
                       }`}
@@ -488,13 +487,13 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
               {/* Budget question */}
               <div className="mb-6">
                 <div className="bg-muted/50 rounded-xl p-4 mb-3 border border-border">
-                  <p className="text-sm text-foreground font-medium mb-1">💰 Investment starts around $4,000</p>
+                  <p className="text-sm text-foreground font-medium mb-1">💰 DIY systems typically cost $8,000–$18,000 in equipment</p>
                   <p className="text-sm text-muted-foreground">
-                    Every system is custom-built for your RV. The exact price depends on your specs — Adam will walk you through everything on the call.
+                    Versus $25,000–$40,000 from a contractor. Jeffrey will size your system and walk you through realistic costs on the call.
                   </p>
                 </div>
                 <p className="text-sm font-medium text-foreground mb-2">
-                  Does that fit within your budget?
+                  Are you ready to move forward this year?
                 </p>
                 <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
                   {[
@@ -517,14 +516,14 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
               </div>
 
               <button
-                onClick={() => answers.shopVisit && answers.budgetReady && handleQualifierComplete()}
+                onClick={() => answers.ownsHome && answers.budgetReady && handleQualifierComplete()}
                 className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
-                  answers.shopVisit && answers.budgetReady
+                  answers.ownsHome && answers.budgetReady
                     ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
-                Book My Call with Adam →
+                Book My Call with Jeffrey →
               </button>
               <p className="text-xs text-center text-muted-foreground mt-2">
                 Free · No pressure · 15–20 minute call
@@ -541,7 +540,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   {`You're in, ${contact.firstName}!`}
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Pick a time below and Adam will give you a call to walk through everything.
+                  Pick a time below and Jeffrey will give you a call to walk through everything.
                 </p>
               </div>
 
@@ -551,7 +550,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   id="Nlssq8ZwRrbqKVyuXNw4_modal"
                   style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '560px' }}
                   scrolling="no"
-                  title="Book a call with Adam"
+                  title="Book a call with Jeffrey"
                 />
               </div>
               <script src="https://links.monox.ai/js/form_embed.js" async />

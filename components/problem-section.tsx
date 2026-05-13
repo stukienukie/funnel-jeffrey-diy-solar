@@ -1,23 +1,23 @@
 const pains = [
   {
-    emoji: '😤',
-    headline: 'The generator goes on at 6am.',
-    body: 'Your neighbors hate you. You hate it too. But without hookups, what choice do you have?',
-  },
-  {
     emoji: '💸',
-    headline: "You're paying $50–$100/night just for electricity.",
-    body: "Full hookup sites are expensive, crowded, and booked out weeks in advance. You didn't buy an RV for this.",
+    headline: "Contractors quoted you $25,000–$40,000.",
+    body: "And that's before incentives that may or may not apply to you. You know solar makes sense — you just can't justify paying someone else's markup.",
   },
   {
-    emoji: '😔',
-    headline: 'You drive past incredible boondocking spots.',
-    body: "BLM land. National forests. Total solitude. But you keep driving because you can't survive off-grid. Not yet.",
+    emoji: '😵',
+    headline: "You don't know where to start.",
+    body: "System sizing, inverters, panels, permits, utility interconnection — it's a lot. One wrong decision and you've wasted thousands.",
   },
   {
-    emoji: '🔋',
-    headline: 'Battery anxiety is real.',
-    body: "You're rationing power. Turning things off. Scrambling for a hookup before dark. Every single trip.",
+    emoji: '🏛️',
+    headline: "Permits and utilities feel like a maze.",
+    body: "Every county is different. Utilities push back. Inspectors want specific drawings. Most DIYers get stuck here and give up.",
+  },
+  {
+    emoji: '🤝',
+    headline: "Sales reps don't actually help you.",
+    body: "They'll sell you a system. They won't teach you the process. You're left holding a manual and a pile of equipment with no real support.",
   },
 ]
 
@@ -30,7 +30,7 @@ export function ProblemSection() {
             Sound Familiar?
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            If you&apos;re still running on generator power or chasing hookups, you already know the problem.
+            If you&apos;ve looked into solar and walked away frustrated, you&apos;re not alone. Here&apos;s what most homeowners run into.
           </p>
         </div>
 
@@ -49,10 +49,10 @@ export function ProblemSection() {
 
         <div className="mt-10 text-center">
           <p className="text-foreground font-medium text-lg">
-            There&apos;s a better way. And it starts with one professional install.
+            There&apos;s a better way — and it doesn&apos;t require hiring a $40,000 contractor.
           </p>
           <p className="text-muted-foreground text-sm mt-1">
-            No more compromises. No more campground dependency. Just clean, silent power — wherever you park.
+            With the right guidance, a DIY solar install is entirely achievable. Jeffrey has helped hundreds of homeowners do exactly that.
           </p>
         </div>
       </div>

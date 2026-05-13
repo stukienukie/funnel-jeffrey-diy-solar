@@ -5,8 +5,8 @@ export function AboutJason() {
         <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
           <div className="shrink-0">
             <img
-              src="/adam-about.jpg"
-              alt="Adam Blair, owner of Avalon RV"
+              src="/jeffrey-about.png"
+              alt="Jeffrey, owner of DIY Solar Assist"
               className="w-44 h-44 rounded-2xl object-cover object-center shadow-md"
               loading="lazy"
               decoding="async"
@@ -15,19 +15,19 @@ export function AboutJason() {
 
           <div className="flex flex-col gap-3 text-center sm:text-left">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Meet Your Installer</p>
-              <h2 className="text-2xl font-extrabold text-foreground">Adam Blair</h2>
-              <p className="text-sm text-muted-foreground">Owner · Avalon RV · Benicia, CA</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Meet Your Guide</p>
+              <h2 className="text-2xl font-extrabold text-foreground">Jeffrey</h2>
+              <p className="text-sm text-muted-foreground">Owner · DIY Solar Assist · Rome, NY</p>
             </div>
 
             <p className="text-muted-foreground leading-relaxed text-sm">
-              I&apos;ve been building and restoring RVs for 18 years. As a Certified Victron Energy Professional,
-              I&apos;ve helped 3,000+ customers across the SF Bay Area and Northern California
-              get true off-grid power. Every system I build is one I&apos;d trust in my own rig.
+              I hold dual NABCEP certifications — in both PV Installation and PV Sales — and I&apos;ve helped homeowners across all 50 states
+              design, permit, and install their own solar systems for a fraction of what contractors charge.
+              My goal is simple: give you contractor-level expertise so you can do it yourself with total confidence.
             </p>
 
             <p className="text-xs text-muted-foreground italic border-l-2 border-primary/40 pl-3">
-              &ldquo;Adam was patient enough with a novice like me to explain everything he was doing so I could learn from him.&rdquo; — R.T., verified customer
+              &ldquo;Jeffrey walked me through every step — design, permits, utility hookup. I saved over $18,000 compared to the quotes I got.&rdquo; — M.K., verified customer
             </p>
           </div>
         </div>

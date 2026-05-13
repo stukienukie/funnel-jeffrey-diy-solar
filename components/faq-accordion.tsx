@@ -5,28 +5,28 @@ import { ChevronDown } from 'lucide-react'
 
 const faqs = [
   {
-    question: 'How much does an RV solar system cost?',
-    answer: 'RV solar systems vary widely based on your power needs, battery capacity, and install complexity. During your free assessment call, Adam will walk you through your specific usage and give you an accurate quote with no surprises.',
+    question: 'How much can I actually save by going DIY?',
+    answer: 'Most homeowners save 50–65% compared to contractor quotes. A system a contractor quotes at $30,000 typically costs $12,000–$15,000 in equipment when you install it yourself — and Jeffrey gets you access to contractor-level pricing on top of that. The savings are real.',
   },
   {
-    question: 'What brands do you use?',
-    answer: 'We use Victron Energy as our primary platform — the gold standard in RV solar. We\'re also authorized dealers for Battle Born / Dragonfly Energy, Expion360, Epoch, Lithionics, and Zamp Solar. You get the best equipment available, properly installed.',
+    question: 'Do I need any prior electrical experience?',
+    answer: "No. Jeffrey's clients range from complete beginners to experienced tradespeople. He'll design your system to match your skill level and walk you through every step. Most clients say the process was far more straightforward than they expected.",
   },
   {
-    question: 'How long does installation take?',
-    answer: 'Most projects are completed within 2–3 weeks. Larger restorations may take 2–3 months, and custom builds can take up to 6 months. We\'ll give you a clear timeline before we start — no guessing.',
+    question: 'What does Jeffrey actually do for me?',
+    answer: "Jeffrey handles the parts that trip most DIYers up: custom system design sized to your exact energy usage, a complete permit package with engineer-stamped drawings, utility interconnection guidance, and live support during your install. You do the physical work — he makes sure it's done right.",
   },
   {
-    question: 'Do you only serve the Benicia area?',
-    answer: 'We\'re based in Benicia, CA and serve all of Northern California. We\'re the largest RV power system installer in the region. Call us to confirm your area.',
+    question: 'Will my county accept a DIY permit package?',
+    answer: "Yes. Jeffrey's permit packages are NEC-compliant and include all the documentation inspectors require. The vast majority of his clients pass inspection on the first try. He's familiar with the quirks of different county AHJs and preps you accordingly.",
   },
   {
-    question: 'Can solar power my RV air conditioner?',
-    answer: 'Absolutely — it\'s one of our most common requests. With the right battery bank and inverter, we can design a system that runs your AC off-grid. We\'ll spec it out exactly during your consultation.',
+    question: 'Does this work for my state / utility?',
+    answer: "Jeffrey serves all 50 states remotely. Utility interconnection requirements vary, which is exactly why having a NABCEP-certified professional in your corner matters — he knows the process and will guide you through your specific utility's requirements.",
   },
   {
-    question: 'What happens during the free assessment call?',
-    answer: 'It\'s a relaxed 15–20 minute conversation where Adam learns about your RV, how you camp, and what you want to power. He\'ll answer your questions and walk you through options. No pressure, no hard sell.',
+    question: 'What happens on the free consultation call?',
+    answer: "It's a relaxed 20–30 minute call where Jeffrey reviews your energy usage, sizes your system, and explains what the process looks like for your specific home and county. He'll answer every question you have. No pressure, no pitch.",
   },
 ]
 

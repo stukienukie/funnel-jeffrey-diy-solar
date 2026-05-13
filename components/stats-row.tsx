@@ -1,10 +1,10 @@
 'use client'
 
 const stats = [
-  { number: '3,000+', label: 'Happy Customers', isReview: false },
-  { number: '4.9★', label: '100+ Google Reviews', isReview: true },
-  { number: '18', label: 'Years in Business', isReview: false },
-  { number: '750+', label: 'Lithium Battery Installs', isReview: false },
+  { number: '60%+', label: 'Avg. Savings vs. Contractors', isReview: false },
+  { number: '4.9★', label: '50+ Google Reviews', isReview: true },
+  { number: 'NABCEP', label: 'Certified Solar Professional', isReview: false },
+  { number: 'All 50', label: 'States Served Remotely', isReview: false },
 ]
 
 export function StatsRow() {

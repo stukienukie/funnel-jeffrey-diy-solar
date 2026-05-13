@@ -1,9 +1,9 @@
 import { Award, MapPin, Phone } from 'lucide-react'
 
 const trustItems = [
-  { icon: Award, text: 'Certified Victron Energy Professional' },
-  { icon: MapPin, text: 'SF Bay Area & Northern California' },
-  { icon: Phone, text: 'Free No-Pressure Assessment' },
+  { icon: Award, text: 'NABCEP Certified — Installation & Sales' },
+  { icon: MapPin, text: 'Rome, NY · Serving All 50 States' },
+  { icon: Phone, text: 'Free System Design Consultation' },
 ]
 
 export function TrustRow() {

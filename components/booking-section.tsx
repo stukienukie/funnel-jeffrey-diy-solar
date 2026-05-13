@@ -23,7 +23,7 @@ export function BookingSection({ isVisible }: BookingSectionProps) {
         </h2>
 
         <p className="text-muted-foreground mb-8">
-          {"Select a time that works best for you and Adam will give you a call. No pressure, just honest advice."}
+          {"Select a time that works best for you and Jeffrey will give you a call. No pressure, just honest advice."}
         </p>
 
         <div className="rounded-xl overflow-hidden border border-border">
@@ -32,7 +32,7 @@ export function BookingSection({ isVisible }: BookingSectionProps) {
             id="Nlssq8ZwRrbqKVyuXNw4_booking"
             style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '700px' }}
             scrolling="no"
-            title="Book a call with Adam"
+            title="Book a call with Jeffrey"
           />
         </div>
         <Script src="https://links.monox.ai/js/form_embed.js" strategy="afterInteractive" />

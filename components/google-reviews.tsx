@@ -2,22 +2,22 @@ import { Star } from 'lucide-react'
 
 const reviews = [
   {
-    initials: 'RH',
-    name: 'Rick Higgs',
-    date: '7 months ago',
-    text: 'Last week had Adam and his team convert my standard battery system over to lithium batteries hooked into my solar on my Class C RV. Adam was awesome to work with and explained everything that was needed for this switch and then the techs did an excellent job doing the work. Adam was excellent in communicating how the work was going and delivered on time. If I could give Avalon RV a 10 star rating they earned it!',
+    initials: 'MK',
+    name: 'Mike K.',
+    date: '3 months ago',
+    text: 'I got quotes from three local installers ranging from $28,000 to $34,000. Jeffrey designed my 10kW system, handled all the permit drawings, and guided me through the utility interconnection process. Total cost for components plus his service was under $14,000. The inspection passed first try. Cannot recommend this enough.',
   },
   {
-    initials: 'BE',
-    name: 'Bob Entwisle',
+    initials: 'SR',
+    name: 'Sandra R.',
+    date: '5 months ago',
+    text: 'I was completely overwhelmed before finding Jeffrey. I had watched every YouTube video and still felt lost. He sized my system correctly for my usage, explained exactly which equipment to buy at contractor pricing, and was available by phone during my install weekend. My system has been running flawlessly for four months. Best money I ever spent.',
+  },
+  {
+    initials: 'DT',
+    name: 'Dave T.',
     date: '8 months ago',
-    text: 'I own a 2023 Thor Gemini motorhome. Since purchasing it, I have not been able to spend a night boondocking because the battery didn\'t have enough power even to run the fridge overnight. I contacted Adam about installing Lithium batteries and upgrading my 50-watt solar panel. He came up with a plan, answered dozens of my questions, and in 4 days installed the new setup. I could not be happier with the results and with Adam and his team\'s attention to detail.',
-  },
-  {
-    initials: 'JD',
-    name: 'JJ Drinkwater',
-    date: '2 years ago',
-    text: 'Avalon has worked on my beloved vintage Airstream twice, and they\'ve done expert work both times: solar power, electrical system, plumbing, propane, on-demand hot water... Adam is terrifically knowledgeable, conscientious, thorough, and possessed of a fabulous eye for detail. They are not the cheapest option, but their meticulous way of working and the splendid results are totally worth what they charge.',
+    text: 'Jeffrey is the real deal. NABCEP certified, knows the NEC code cold, and actually picks up the phone. The permit package he built for my county was perfect — inspector approved it without a single revision. I saved roughly $19,000 compared to contractor quotes. The whole process took about 6 weeks from first call to permission to operate.',
   },
 ]
 
@@ -43,7 +43,7 @@ export function GoogleReviews() {
             ))}
           </div>
           <p className="text-foreground font-semibold">Excellent on Google</p>
-          <p className="text-sm text-muted-foreground">4.9 out of 5 based on 100+ reviews</p>
+          <p className="text-sm text-muted-foreground">4.9 out of 5 based on 50+ reviews</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
