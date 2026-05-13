@@ -24,7 +24,7 @@ export function PhotoGrid() {
             <div key={i} className="aspect-[4/3] relative rounded-xl overflow-hidden border border-border bg-muted">
               <Image
                 src={src}
-                alt={`RV solar installation job ${i + 1}`}
+                alt={`DIY solar installation ${i + 1}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 33vw"
