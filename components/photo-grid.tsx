@@ -19,13 +19,14 @@ export function PhotoGrid() {
           📸 Recent Installations
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           {photos.map((src, i) => (
             <div key={i} className="aspect-[4/3] relative rounded-xl overflow-hidden border border-border bg-muted">
               <Image
                 src={src}
                 alt={`DIY solar installation ${i + 1}`}
                 fill
+                loading="lazy"
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 33vw"
               />

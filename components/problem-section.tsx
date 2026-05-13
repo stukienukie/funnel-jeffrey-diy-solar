@@ -51,24 +51,24 @@ export function ProblemSection() {
           <p className="text-center text-foreground font-medium text-lg mb-6">
             Here&apos;s what the numbers actually look like on a 10kW system over 25 years:
           </p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 md:gap-3">
             {[
               { label: 'Grid Utility', cost: '$1.00+', unit: '/kWh', sub: 'And rising every year', highlight: false, bad: true },
-              { label: 'Contractor Solar', cost: '$0.081', unit: '/kWh', sub: '$25,000 installed', highlight: false, bad: false },
+              { label: 'Contractor Solar', cost: '$0.15', unit: '/kWh', sub: '$35,000+ installed', highlight: false, bad: false },
               { label: 'DIY Solar Assist', cost: '$0.041', unit: '/kWh', sub: '$12,900 in equipment', highlight: true, bad: false },
             ].map((item) => (
               <div
                 key={item.label}
-                className={`rounded-xl border p-4 text-center ${item.highlight ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}
+                className={`rounded-xl border p-2 md:p-4 text-center ${item.highlight ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}
               >
-                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${item.highlight ? 'text-primary' : 'text-muted-foreground'}`}>
+                <p className={`text-[10px] md:text-xs font-semibold uppercase tracking-tight md:tracking-wider mb-1 md:mb-2 leading-tight ${item.highlight ? 'text-primary' : 'text-muted-foreground'}`}>
                   {item.label}
                 </p>
-                <p className={`font-heading text-3xl md:text-4xl ${item.bad ? 'text-destructive' : item.highlight ? 'text-primary' : 'text-foreground'}`}>
+                <p className={`font-heading text-2xl md:text-4xl ${item.bad ? 'text-destructive' : item.highlight ? 'text-primary' : 'text-foreground'}`}>
                   {item.cost}
                 </p>
-                <p className="text-xs text-muted-foreground">{item.unit} lifetime</p>
-                <p className="text-xs text-muted-foreground mt-1">{item.sub}</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground">{item.unit} lifetime</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1 leading-tight">{item.sub}</p>
               </div>
             ))}
           </div>
