@@ -13,8 +13,8 @@ const signals = [
   },
   {
     icon: Zap,
-    headline: 'The 30% federal tax credit has a deadline.',
-    body: "The ITC is available now, but you need to have your system installed and operational within the tax year to claim it. Don't leave thousands on the table.",
+    headline: 'Utilities are rolling back net metering.',
+    body: "States across the country are cutting the credits homeowners earn for sending power back to the grid. Go live sooner and get grandfathered into better terms.",
   },
 ]
 

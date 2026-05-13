@@ -18,11 +18,11 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Avalon RV — RV Solar Installations in Benicia, CA',
-  description: "SF Bay Area's trusted RV solar installer. Certified Victron Energy Professional, 18 years experience, 3,000+ happy customers. Get your free solar assessment today!",
+  title: 'DIY Solar Assist — Go Solar for 60% Less, Without a Contractor',
+  description: "NABCEP-certified expert guidance for DIY home solar. Custom system design, permits handled, and full installation support — serving all 50 states remotely. Free consultation.",
   icons: {
     icon: [
-      { url: '/icon-light-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/icon.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: '/apple-icon.png',
