@@ -370,7 +370,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   id="email"
                   name="email"
                   autoComplete="email"
-                  placeholder="Email Address (optional)"
+                  placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -381,7 +381,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   disabled={isSubmitting}
                   className="w-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-bold py-4 px-8 rounded-2xl transition-all text-lg cursor-pointer mt-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'One moment...' : 'Get My Savings Estimate →'}
+                  {isSubmitting ? 'One moment...' : 'See How Much I Can Save Going DIY →'}
                 </button>
                 <p className="text-xs text-center text-muted-foreground">
                   Free · No commitment · Your info is never shared
