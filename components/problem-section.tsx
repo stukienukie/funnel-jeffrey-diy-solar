@@ -25,7 +25,7 @@ const pains = [
 
 const costComparison = [
   { label: 'Grid Utility',     cost: '$1.00+', unit: '/kWh', sub: 'And rising every year',  highlight: false, bad: true  },
-  { label: 'Contractor Solar', cost: '$0.18+', unit: '/kWh', sub: 'And rising',               highlight: false, bad: false },
+  { label: 'Contractor Solar', cost: '$0.10',  unit: '/kWh', sub: '$35,000+ installed',      highlight: false, bad: false },
   { label: 'DIY Solar Assist', cost: '$0.041', unit: '/kWh', sub: '$12,900 in equipment',    highlight: true,  bad: false },
 ]
 
