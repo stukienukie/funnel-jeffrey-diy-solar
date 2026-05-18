@@ -1,50 +1,66 @@
 'use client'
 
 import { useEffect, useState, type FormEvent } from 'react'
-import { X, ChevronLeft, Check } from 'lucide-react'
+import { X, ChevronLeft, Zap } from 'lucide-react'
 
-// ── Config ──────────────────────────────────────────────────────────────────
 const GHL_WEBHOOK_URL = '/api/submit'
 const BOOKING_URL = 'https://links.monox.ai/widget/booking/Nlssq8ZwRrbqKVyuXNw4'
 
-// ── Types ────────────────────────────────────────────────────────────────────
-type Step = 'contact' | 'propertyType' | 'goal' | 'qualifier' | 'booking'
+type Step = 'state' | 'bill' | 'ownership' | 'roofType' | 'goal' | 'contact' | 'result'
+type BillKey = 'under-100' | '100-149' | '150-199' | '200-299' | '300-plus'
 
-interface ContactData {
-  firstName: string
-  lastName: string
-  phone: string
-  email: string
+interface SavingsTier {
+  systemSize: number
+  diyCost: number
+  contractorCost: number
+  monthlySavings: number
+  paybackYears: number
 }
 
-interface Answers {
-  propertyType: string
-  propertyTypeOther?: string
-  goal: string
-  ownsHome: string
-  budgetReady: string
+const SAVINGS: Record<BillKey, SavingsTier> = {
+  'under-100': { systemSize: 4,  diyCost: 5200,  contractorCost: 12000, monthlySavings: 80,  paybackYears: 5.4 },
+  '100-149':   { systemSize: 7,  diyCost: 9000,  contractorCost: 21000, monthlySavings: 120, paybackYears: 6.3 },
+  '150-199':   { systemSize: 9,  diyCost: 11600, contractorCost: 27000, monthlySavings: 155, paybackYears: 6.2 },
+  '200-299':   { systemSize: 11, diyCost: 14200, contractorCost: 33000, monthlySavings: 210, paybackYears: 5.6 },
+  '300-plus':  { systemSize: 15, diyCost: 19350, contractorCost: 45000, monthlySavings: 280, paybackYears: 5.8 },
 }
 
-interface AssessmentModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSuccess: () => void
-}
-
-// ── Question data ─────────────────────────────────────────────────────────────
-const propertyTypeOptions = [
-  { value: 'single-family', label: 'Single-Family Home', emoji: '🏠' },
-  { value: 'multi-family', label: 'Multi-Family / Duplex', emoji: '🏘️' },
-  { value: 'small-business', label: 'Small Business / Commercial', emoji: '🏢' },
-  { value: 'other', label: 'Other', emoji: '⚡' },
+const US_STATES = [
+  'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut',
+  'Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa',
+  'Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan',
+  'Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire',
+  'New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio',
+  'Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota',
+  'Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia',
+  'Wisconsin','Wyoming','District of Columbia',
 ]
 
-const goalOptions = [
-  { value: 'cut-bill', label: 'Cut my electric bill by 60%+', sub: 'Stop giving money to the utility company', emoji: '💸' },
-  { value: 'energy-independence', label: 'Achieve energy independence', sub: 'Battery backup, self-reliance, no outages', emoji: '🔋' },
-  { value: 'protect-from-rates', label: 'Protect against rising utility rates', sub: 'Lock in your energy cost for 25+ years', emoji: '📈' },
-  { value: 'home-value', label: 'Add value to my home', sub: 'Solar increases resale value significantly', emoji: '🏡' },
+const BILL_OPTIONS: { key: BillKey; label: string; sub: string }[] = [
+  { key: 'under-100', label: 'Under $100', sub: '~4 kW system' },
+  { key: '100-149',   label: '$100–$149',  sub: '~7 kW system' },
+  { key: '150-199',   label: '$150–$199',  sub: '~9 kW system' },
+  { key: '200-299',   label: '$200–$299',  sub: '~11 kW system' },
+  { key: '300-plus',  label: '$300+',      sub: '~15 kW system' },
 ]
+
+const ROOF_OPTIONS = [
+  { value: 'shingle', label: 'Shingle',  emoji: '🏠' },
+  { value: 'metal',   label: 'Metal',    emoji: '🏗️' },
+  { value: 'tile',    label: 'Tile',     emoji: '🏡' },
+  { value: 'flat',    label: 'Flat',     emoji: '🏢' },
+  { value: 'unsure',  label: 'Not sure', emoji: '❓' },
+]
+
+const GOAL_OPTIONS = [
+  { value: 'cut-bill',     label: 'Cut my electric bill',          sub: 'Save 60%+ on monthly utility costs',        emoji: '💸' },
+  { value: 'independence', label: 'Energy independence',           sub: 'Battery backup, self-reliance, no outages', emoji: '🔋' },
+  { value: 'rate-lock',    label: 'Protect against rising rates',  sub: 'Lock in your energy cost for 25+ years',    emoji: '📈' },
+  { value: 'home-value',   label: 'Add home value',                sub: 'Solar increases resale value significantly', emoji: '🏡' },
+]
+
+const QUIZ_STEPS: Step[] = ['state', 'bill', 'ownership', 'roofType', 'goal']
+const ALL_STEPS: Step[] = [...QUIZ_STEPS, 'contact', 'result']
 
 declare global {
   interface Window {
@@ -53,16 +69,29 @@ declare global {
   }
 }
 
+interface AssessmentModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: () => void
+}
+
 export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalProps) {
-  const [step, setStep] = useState<Step>('contact')
-  const [contact, setContact] = useState<ContactData>({ firstName: '', lastName: '', phone: '', email: '' })
-  const [answers, setAnswers] = useState<Answers>({ propertyType: '', propertyTypeOther: '', goal: '', ownsHome: '', budgetReady: '' })
-  const [errors, setErrors] = useState<Partial<ContactData>>({})
+  const [step, setStep] = useState<Step>('state')
+  const [stateValue, setStateValue] = useState('')
+  const [billAmount, setBillAmount] = useState<BillKey | ''>('')
+  const [ownsHome, setOwnsHome] = useState('')
+  const [roofType, setRoofType] = useState('')
+  const [goal, setGoal] = useState('')
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isShaking, setIsShaking] = useState(false)
 
-  const STEPS: Step[] = ['contact', 'propertyType', 'goal', 'qualifier', 'booking']
-  const stepIndex = STEPS.indexOf(step)
+  const quizIndex = QUIZ_STEPS.indexOf(step)
+  const showProgress = quizIndex !== -1
+  const canGoBack = step !== 'state' && step !== 'result'
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -78,26 +107,34 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
   useEffect(() => {
     if (isOpen) {
-      setStep('contact')
-      setContact({ firstName: '', lastName: '', phone: '', email: '' })
-      setAnswers({ propertyType: '', goal: '', ownsHome: '', budgetReady: '' })
+      setStep('state')
+      setStateValue('')
+      setBillAmount('')
+      setOwnsHome('')
+      setRoofType('')
+      setGoal('')
+      setName('')
+      setPhone('')
+      setEmail('')
       setErrors({})
     }
   }, [isOpen])
 
   const goBack = () => {
-    const prev = STEPS[stepIndex - 1]
-    if (prev) setStep(prev)
+    const idx = ALL_STEPS.indexOf(step)
+    if (idx > 0) setStep(ALL_STEPS[idx - 1])
   }
 
-  // Submit contact to GHL then advance
+  const savings = billAmount ? SAVINGS[billAmount] : null
+  const vsContractor = savings ? savings.contractorCost - savings.diyCost : 0
+  const savingsPct = savings ? Math.round((1 - savings.diyCost / savings.contractorCost) * 100) : 0
+
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    const newErrors: Partial<ContactData> = {}
-    if (!contact.firstName.trim()) newErrors.firstName = 'required'
-    if (!contact.lastName.trim()) newErrors.lastName = 'required'
-    if (!contact.phone.trim()) newErrors.phone = 'required'
-    if (!contact.email.trim() || !contact.email.includes('@')) newErrors.email = 'required'
+    const newErrors: Record<string, string> = {}
+    if (!name.trim()) newErrors.name = 'required'
+    if (!phone.trim()) newErrors.phone = 'required'
+    if (!email.trim() || !email.includes('@')) newErrors.email = 'required'
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) {
       setIsShaking(true)
@@ -107,18 +144,52 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
     setIsSubmitting(true)
 
-    // Await so the contact is guaranteed sent before advancing
+    const goalLabel = GOAL_OPTIONS.find(o => o.value === goal)?.label ?? goal
+    const roofLabel = ROOF_OPTIONS.find(o => o.value === roofType)?.label ?? roofType
+    const billLabel = BILL_OPTIONS.find(o => o.key === billAmount)?.label ?? billAmount
+
+    const notes = [
+      `=== DIY Solar Assist Funnel — Quiz Results ===`,
+      `Submitted: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} (CST)`,
+      ``,
+      `State: ${stateValue}`,
+      `Monthly bill: ${billLabel}`,
+      `Owns home: ${ownsHome === 'yes' ? 'Yes' : 'Not yet'}`,
+      `Roof type: ${roofLabel}`,
+      `#1 Goal: ${goalLabel}`,
+      ``,
+      `Estimated system size: ${savings?.systemSize} kW`,
+      `DIY equipment cost: $${savings?.diyCost.toLocaleString()}`,
+      `Contractor equivalent: $${savings?.contractorCost.toLocaleString()}`,
+      `Monthly savings estimate: $${savings?.monthlySavings}`,
+      `Payback period: ${savings?.paybackYears} years`,
+      `Savings vs. contractor: $${vsContractor.toLocaleString()} (~${savingsPct}%)`,
+    ].join('\n')
+
     try {
       await fetch(GHL_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: contact.firstName,
-          last_name: contact.lastName,
-          phone: contact.phone,
-          email: contact.email,
-          step: 'contact-captured',
-          tags: 'diy-solar-funnel,quiz-started',
+          first_name: name.trim().split(' ')[0],
+          last_name: name.trim().split(' ').slice(1).join(' ') || '',
+          phone,
+          email,
+          state: stateValue,
+          monthly_bill: billLabel,
+          owns_home: ownsHome === 'yes' ? 'Yes' : 'Not yet',
+          roof_type: roofLabel,
+          goal: goalLabel,
+          system_size_kw: savings?.systemSize,
+          diy_equipment_cost: savings?.diyCost,
+          contractor_equivalent: savings?.contractorCost,
+          monthly_savings_estimate: savings?.monthlySavings,
+          payback_years: savings?.paybackYears,
+          savings_vs_contractor: vsContractor,
+          savings_pct: savingsPct,
+          step: 'quiz-complete',
+          notes,
+          tags: 'diy-solar-funnel,quiz-complete',
           source: 'DIY Solar Assist Funnel',
         }),
       })
@@ -128,10 +199,14 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
     window.dataLayer = window.dataLayer || []
     window.dataLayer.push({
-      event: 'contact_captured',
-      lead_name: `${contact.firstName} ${contact.lastName}`,
-      lead_phone: contact.phone,
-      lead_email: contact.email,
+      event: 'quiz_complete',
+      state: stateValue,
+      monthly_bill: billAmount,
+      owns_home: ownsHome,
+      roof_type: roofType,
+      goal,
+      savings_vs_contractor: vsContractor,
+      savings_pct: savingsPct,
     })
 
     if (typeof window.fbq === 'function') {
@@ -139,74 +214,10 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     }
 
     setIsSubmitting(false)
-    setStep('propertyType')
-  }
-
-  // Push final answers to GHL on qualifier completion
-  const handleQualifierComplete = async () => {
-    const propertyTypeLabel = answers.propertyType === 'other'
-      ? (answers.propertyTypeOther || 'Other')
-      : propertyTypeOptions.find(o => o.value === answers.propertyType)?.label ?? answers.propertyType
-
-    const goalLabel = goalOptions.find(o => o.value === answers.goal)?.label ?? answers.goal
-
-    const ownsHomeLabel = answers.ownsHome === 'yes' ? 'Yes, I own my home' : 'Renting / Not sure'
-    const budgetLabel = answers.budgetReady === 'yes' ? "Yes, ready to invest" : 'Needs to think about it'
-
-    const notes = [
-      `=== DIY Solar Assist Funnel — Quiz Results ===`,
-      `Submitted: ${new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })} (CST)`,
-      ``,
-      `Property Type: ${propertyTypeLabel}`,
-      `#1 Goal:       ${goalLabel}`,
-      `Owns home:     ${ownsHomeLabel}`,
-      `Budget ready:  ${budgetLabel}`,
-      ``,
-      `Source: DIY Solar Assist Funnel`,
-    ].join('\n')
-
-    try {
-      await fetch(GHL_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: contact.firstName,
-          last_name: contact.lastName,
-          phone: contact.phone,
-          email: contact.email,
-          property_type: propertyTypeLabel,
-          goal: goalLabel,
-          owns_home: ownsHomeLabel,
-          budget_ready: budgetLabel,
-          step: 'quiz-complete',
-          notes,
-          tags: 'diy-solar-funnel,quiz-complete',
-          source: 'DIY Solar Assist Funnel',
-        }),
-      })
-    } catch {
-      // Non-blocking
-    }
-
-    window.dataLayer = window.dataLayer || []
-    window.dataLayer.push({
-      event: 'quiz_complete',
-      property_type: answers.propertyType,
-      goal: answers.goal,
-      owns_home: answers.ownsHome,
-      budget_ready: answers.budgetReady,
-    })
-
-    setStep('booking')
-    onSuccess()
+    setStep('result')
   }
 
   if (!isOpen) return null
-
-  // Progress bar — only for quiz steps (not contact, not booking)
-  const quizSteps: Step[] = ['propertyType', 'goal', 'qualifier']
-  const quizIndex = quizSteps.indexOf(step)
-  const showProgress = quizIndex !== -1
 
   return (
     <div
@@ -221,7 +232,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
         {/* Sticky header */}
         <div className="sticky top-0 bg-background rounded-t-2xl md:rounded-t-2xl z-10 px-6 pt-5 pb-4 border-b border-border flex-shrink-0">
           <div className="flex items-center justify-between mb-3">
-            {stepIndex > 0 && step !== 'booking' ? (
+            {canGoBack ? (
               <button
                 onClick={goBack}
                 className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
@@ -243,7 +254,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
           {showProgress && (
             <div>
               <div className="flex gap-1.5">
-                {quizSteps.map((s, i) => (
+                {QUIZ_STEPS.map((s, i) => (
                   <div
                     key={s}
                     className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= quizIndex ? 'bg-primary' : 'bg-muted'}`}
@@ -251,7 +262,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                 ))}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Step {quizIndex + 1} of {quizSteps.length}
+                Step {quizIndex + 1} of {QUIZ_STEPS.length}
               </p>
             </div>
           )}
@@ -260,10 +271,170 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
         {/* Scrollable content */}
         <div className="overflow-y-auto flex-1 p-6">
 
-          {/* ── CONTACT (pre-req gate) ───────────────────────────────── */}
+          {/* ── STEP 1: STATE ─────────────────────────────────────── */}
+          {step === 'state' && (
+            <div>
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-3">🗺️</div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  Where is the property located?
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Jeffrey designs systems for all 50 states — 100% remotely
+                </p>
+              </div>
+
+              <select
+                value={stateValue}
+                onChange={(e) => setStateValue(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 mb-6"
+              >
+                <option value="">Select your state...</option>
+                {US_STATES.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+
+              <button
+                onClick={() => stateValue && setStep('bill')}
+                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
+                  stateValue
+                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                }`}
+              >
+                Continue →
+              </button>
+            </div>
+          )}
+
+          {/* ── STEP 2: MONTHLY BILL ──────────────────────────────── */}
+          {step === 'bill' && (
+            <div>
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-3">⚡</div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  {"What's your average monthly electric bill?"}
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  This determines your system size and savings estimate
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {BILL_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.key}
+                    onClick={() => { setBillAmount(opt.key); setStep('ownership') }}
+                    className="w-full flex items-center gap-4 p-4 rounded-xl border border-input hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-left"
+                  >
+                    <div className="flex-1">
+                      <div className="font-semibold text-foreground">{opt.label}</div>
+                      <div className="text-sm text-muted-foreground">{opt.sub}</div>
+                    </div>
+                    <ChevronLeft className="w-4 h-4 text-muted-foreground rotate-180 flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 3: OWNERSHIP ─────────────────────────────────── */}
+          {step === 'ownership' && (
+            <div>
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-3">🏡</div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  Do you own the property?
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Solar is most beneficial for homeowners
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { value: 'yes', label: 'Yes, I own it',  sub: "Great — you're a perfect candidate", emoji: '✅' },
+                  { value: 'no',  label: 'Not yet',        sub: 'We may still be able to help',       emoji: '🤔' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => { setOwnsHome(opt.value); setStep('roofType') }}
+                    className="w-full flex items-center gap-4 p-5 rounded-xl border border-input hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-left"
+                  >
+                    <span className="text-2xl flex-shrink-0">{opt.emoji}</span>
+                    <div className="flex-1">
+                      <div className="font-semibold text-foreground">{opt.label}</div>
+                      <div className="text-sm text-muted-foreground">{opt.sub}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 4: ROOF TYPE ─────────────────────────────────── */}
+          {step === 'roofType' && (
+            <div>
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-3">🏠</div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  What type of roof do you have?
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Affects the mounting hardware and installation approach
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {ROOF_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => { setRoofType(opt.value); setStep('goal') }}
+                    className="flex flex-col items-center gap-2 p-4 rounded-xl border border-input hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+                  >
+                    <span className="text-3xl">{opt.emoji}</span>
+                    <span className="text-sm font-medium text-foreground">{opt.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 5: GOAL ──────────────────────────────────────── */}
+          {step === 'goal' && (
+            <div>
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-3">🎯</div>
+                <h2 className="font-heading text-2xl text-foreground mb-1">
+                  {"What's your #1 goal with solar?"}
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Pick the one that matters most to you right now
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {GOAL_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => { setGoal(opt.value); setStep('contact') }}
+                    className="w-full flex items-center gap-4 p-4 rounded-xl border border-input hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-left"
+                  >
+                    <span className="text-2xl w-8 text-center flex-shrink-0">{opt.emoji}</span>
+                    <div className="flex-1">
+                      <div className="font-medium text-foreground">{opt.label}</div>
+                      <div className="text-sm text-muted-foreground">{opt.sub}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── CONTACT GATE ──────────────────────────────────────── */}
           {step === 'contact' && (
             <div>
-              {/* Jeffrey intro hook */}
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="relative mb-4">
                   <img
@@ -275,50 +446,38 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   />
                   <span className="absolute -bottom-1 -right-1 text-lg">☀️</span>
                 </div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-2">
-                  Before we connect you directly with Jeffrey...
-                </p>
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full mb-3">
+                  <Zap className="w-3 h-3 fill-current" />
+                  Your personalized estimate is ready
+                </div>
                 <h2 className="font-heading text-2xl text-foreground mb-2 leading-tight">
-                  Take this 60-second quiz to design your solar system
+                  Where should we send your savings estimate?
                 </h2>
                 <p className="text-muted-foreground text-sm max-w-xs">
-                  So when Jeffrey calls, he already knows your home and goals — no guessing, no wasted time.
+                  Enter your info to unlock your personalized 25-year solar savings breakdown.
                 </p>
-              </div>
-
-              <div className="border-t border-border pt-5 mb-5">
-                <p className="text-xs text-center text-muted-foreground mb-4 font-medium">Enter your info to get started — free, no commitment</p>
               </div>
 
               <form onSubmit={handleContactSubmit} className={`space-y-3 ${isShaking ? 'animate-shake' : ''}`}>
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="First Name"
-                    value={contact.firstName}
-                    onChange={(e) => setContact({ ...contact, firstName: e.target.value })}
-                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.firstName ? 'border-destructive' : 'border-input'}`}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    value={contact.lastName}
-                    onChange={(e) => setContact({ ...contact, lastName: e.target.value })}
-                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.lastName ? 'border-destructive' : 'border-input'}`}
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.name ? 'border-destructive' : 'border-input'}`}
+                />
                 <input
                   type="tel"
                   placeholder="Phone Number"
-                  value={contact.phone}
-                  onChange={(e) => setContact({ ...contact, phone: e.target.value })}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.phone ? 'border-destructive' : 'border-input'}`}
                 />
                 <input
                   type="email"
                   placeholder="Email Address"
-                  value={contact.email}
-                  onChange={(e) => setContact({ ...contact, email: e.target.value })}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.email ? 'border-destructive' : 'border-input'}`}
                 />
 
@@ -327,233 +486,78 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   disabled={isSubmitting}
                   className="w-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-bold py-4 px-8 rounded-2xl transition-all text-lg cursor-pointer mt-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Sending...' : 'Start My Assessment →'}
+                  {isSubmitting ? 'Calculating...' : 'Show My Savings Estimate →'}
                 </button>
                 <p className="text-xs text-center text-muted-foreground">
-                  Your info is secure and will never be shared.
+                  Free · No commitment · Your info is never shared
                 </p>
               </form>
             </div>
           )}
 
-          {/* ── STEP 1: PROPERTY TYPE ───────────────────────────────── */}
-          {step === 'propertyType' && (
-            <div>
-              <div className="text-center mb-6">
-                <div className="text-4xl mb-3">🏠</div>
-                <h2 className="font-heading text-2xl text-foreground mb-1">
-                  What type of property is this for?
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  This helps Jeffrey design the right system for your situation
-                </p>
-              </div>
-
-              <div className="space-y-2 mb-6">
-                {propertyTypeOptions.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setAnswers({ ...answers, propertyType: opt.value, propertyTypeOther: '' })}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer text-left ${
-                      answers.propertyType === opt.value
-                        ? 'border-primary bg-primary/5 shadow-sm'
-                        : 'border-input hover:border-primary/50 hover:bg-muted/40'
-                    }`}
-                  >
-                    <span className="text-2xl w-8 text-center">{opt.emoji}</span>
-                    <span className="font-medium text-foreground flex-1">{opt.label}</span>
-                    {answers.propertyType === opt.value && <Check className="w-4 h-4 text-primary" />}
-                  </button>
-                ))}
-                {answers.propertyType === 'other' && (
-                  <input
-                    type="text"
-                    placeholder="Describe your property type..."
-                    value={answers.propertyTypeOther ?? ''}
-                    onChange={(e) => setAnswers({ ...answers, propertyTypeOther: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg border border-primary bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    autoFocus
-                  />
-                )}
-              </div>
-
-              <button
-                onClick={() => {
-                  const ready = answers.propertyType && (answers.propertyType !== 'other' || (answers.propertyTypeOther ?? '').trim())
-                  if (ready) setStep('goal')
-                }}
-                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
-                  answers.propertyType && (answers.propertyType !== 'other' || (answers.propertyTypeOther ?? '').trim())
-                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed'
-                }`}
-              >
-                Continue →
-              </button>
-            </div>
-          )}
-
-          {/* ── STEP 2: GOAL ────────────────────────────────────────── */}
-          {step === 'goal' && (
-            <div>
-              <div className="text-center mb-6">
-                <div className="text-4xl mb-3">⚡</div>
-                <h2 className="font-heading text-2xl text-foreground mb-1">
-                  {"What's your #1 goal with solar?"}
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  Pick the one that matters most to you right now
-                </p>
-              </div>
-
-              <div className="space-y-2 mb-6">
-                {goalOptions.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setAnswers({ ...answers, goal: opt.value })}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all cursor-pointer text-left ${
-                      answers.goal === opt.value
-                        ? 'border-primary bg-primary/5 shadow-sm'
-                        : 'border-input hover:border-primary/50 hover:bg-muted/40'
-                    }`}
-                  >
-                    <span className="text-2xl w-8 text-center flex-shrink-0">{opt.emoji}</span>
-                    <div className="flex-1">
-                      <div className="font-medium text-foreground">{opt.label}</div>
-                      <div className="text-sm text-muted-foreground">{opt.sub}</div>
-                    </div>
-                    {answers.goal === opt.value && <Check className="w-4 h-4 text-primary flex-shrink-0" />}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => answers.goal && setStep('qualifier')}
-                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
-                  answers.goal
-                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed'
-                }`}
-              >
-                Continue →
-              </button>
-            </div>
-          )}
-
-          {/* ── STEP 3: QUALIFIER (shop visit + budget) ─────────────── */}
-          {step === 'qualifier' && (
-            <div>
-              <div className="text-center mb-6">
-                <div className="text-4xl mb-3">🤝</div>
-                <h2 className="font-heading text-2xl text-foreground mb-1">
-                  Two quick things before we book your call
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  We want to make sure this is a great fit for both of us
-                </p>
-              </div>
-
-              {/* Homeowner question */}
-              <div className="mb-5">
-                <div className="bg-muted/50 rounded-xl p-4 mb-3 border border-border">
-                  <p className="text-sm text-foreground font-medium mb-1">🌎 Jeffrey serves all 50 states — 100% remotely</p>
-                  <p className="text-sm text-muted-foreground">
-                    Everything is handled via phone, email, and video — system design, permit drawings, and installation support from anywhere in the country.
-                  </p>
-                </div>
-                <p className="text-sm font-medium text-foreground mb-2">
-                  Do you own the property where solar will be installed?
-                </p>
-                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
-                  {[
-                    { value: 'yes', label: '✅ Yes, I own it' },
-                    { value: 'maybe', label: '🤔 Renting / Not sure' },
-                  ].map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => setAnswers({ ...answers, ownsHome: opt.value })}
-                      className={`w-full p-3 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
-                        answers.ownsHome === opt.value
-                          ? 'border-primary bg-primary/5 text-foreground'
-                          : 'border-input hover:border-primary/50 text-muted-foreground'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Budget question */}
-              <div className="mb-6">
-                <div className="bg-muted/50 rounded-xl p-4 mb-3 border border-border">
-                  <p className="text-sm text-foreground font-medium mb-1">💰 DIY systems typically cost $8,000–$18,000 in equipment</p>
-                  <p className="text-sm text-muted-foreground">
-                    Versus $25,000–$40,000 from a contractor. Jeffrey will size your system and walk you through realistic costs on the call.
-                  </p>
-                </div>
-                <p className="text-sm font-medium text-foreground mb-2">
-                  Are you ready to move forward this year?
-                </p>
-                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
-                  {[
-                    { value: 'yes', label: "✅ Yes, I'm ready to invest" },
-                    { value: 'maybe', label: '🤔 I need to think about it' },
-                  ].map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => setAnswers({ ...answers, budgetReady: opt.value })}
-                      className={`p-3 rounded-xl border text-sm font-medium transition-all cursor-pointer ${
-                        answers.budgetReady === opt.value
-                          ? 'border-primary bg-primary/5 text-foreground'
-                          : 'border-input hover:border-primary/50 text-muted-foreground'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={() => answers.ownsHome && answers.budgetReady && handleQualifierComplete()}
-                className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all ${
-                  answers.ownsHome && answers.budgetReady
-                    ? 'bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground cursor-pointer shadow-lg shadow-primary/30 hover:-translate-y-0.5'
-                    : 'bg-muted text-muted-foreground cursor-not-allowed'
-                }`}
-              >
-                Book My Call with Jeffrey →
-              </button>
-              <p className="text-xs text-center text-muted-foreground mt-2">
-                Free · No pressure · 15–20 minute call
-              </p>
-            </div>
-          )}
-
-          {/* ── STEP 4: BOOKING ─────────────────────────────────────── */}
-          {step === 'booking' && (
+          {/* ── RESULT: PERSONALIZED SAVINGS CARD ─────────────────── */}
+          {step === 'result' && savings && (
             <div>
               <div className="text-center mb-5">
-                <div className="text-4xl mb-3">📅</div>
+                <div className="text-4xl mb-2">🎉</div>
                 <h2 className="font-heading text-2xl text-foreground mb-1">
-                  {`You're in, ${contact.firstName}!`}
+                  {`Here's your estimate, ${name.trim().split(' ')[0]}!`}
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Pick a time below and Jeffrey will give you a call to walk through everything.
+                  Based on a {savings.systemSize} kW system in {stateValue}
                 </p>
               </div>
 
-              <div className="rounded-xl overflow-hidden border border-border">
-                <iframe
-                  src={BOOKING_URL}
-                  id="Nlssq8ZwRrbqKVyuXNw4_modal"
-                  style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '560px' }}
-                  scrolling="no"
-                  title="Book a call with Jeffrey"
-                />
+              {/* Big savings vs contractor */}
+              <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 text-center mb-4">
+                <p className="text-sm text-muted-foreground font-medium mb-1">Estimated savings vs. hiring a contractor</p>
+                <p className="font-heading text-5xl text-primary mb-1">
+                  ${vsContractor.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">~{savingsPct}% less than a contractor — by going DIY with Jeffrey</p>
+                <p className="text-[10px] text-muted-foreground mt-2 italic">* Approximate estimate based on typical system costs</p>
               </div>
-              <script src="https://links.monox.ai/js/form_embed.js" async />
+
+              {/* 6-cell breakdown with ✓/✗ marks */}
+              <div className="grid grid-cols-2 gap-2 mb-4 sm:grid-cols-3">
+                {[
+                  { label: 'System Size',           value: `${savings.systemSize} kW`,                                         mark: null },
+                  { label: 'Your DIY Cost',          value: `$${savings.diyCost.toLocaleString()}`,                            mark: 'check' },
+                  { label: 'Contractor Cost',        value: `$${savings.contractorCost.toLocaleString()}`,                     mark: 'x' },
+                  { label: 'Monthly Savings Est.',   value: `$${savings.monthlySavings}/mo`,                                   mark: 'check' },
+                  { label: 'Payback Period',         value: `${savings.paybackYears} yrs`,                                     mark: 'check' },
+                  { label: 'You Save',               value: `~${savingsPct}%`,                                                 mark: 'check' },
+                ].map((cell) => (
+                  <div
+                    key={cell.label}
+                    className={`relative bg-card rounded-xl border p-3 text-center ${
+                      cell.mark === 'x' ? 'border-destructive/30' : cell.mark === 'check' ? 'border-primary/25' : 'border-border'
+                    }`}
+                  >
+                    {cell.mark && (
+                      <span className={`absolute top-2 right-2.5 text-xs font-bold leading-none ${cell.mark === 'check' ? 'text-primary' : 'text-destructive'}`}>
+                        {cell.mark === 'check' ? '✓' : '✗'}
+                      </span>
+                    )}
+                    <p className={`font-heading text-xl ${cell.mark === 'x' ? 'text-destructive' : 'text-foreground'}`}>{cell.value}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider leading-tight mt-0.5">{cell.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-muted/50 rounded-xl p-4 border border-border mb-5 text-sm text-muted-foreground text-center leading-relaxed">
+                These are approximate figures. Jeffrey will review your specific home and give you exact numbers on the call.
+              </div>
+
+              <button
+                onClick={onSuccess}
+                className="w-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-bold py-5 px-8 rounded-2xl transition-all text-lg cursor-pointer shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 hover:-translate-y-0.5"
+              >
+                Book My Free Call with Jeffrey →
+              </button>
+              <p className="text-xs text-center text-muted-foreground mt-2">
+                Free · 15–20 minutes · No pressure
+              </p>
             </div>
           )}
 

@@ -1,48 +1,62 @@
+import { TrendingUp, Compass, ScrollText, UserX } from 'lucide-react'
+
 const pains = [
   {
-    emoji: '💸',
-    headline: "Contractors quoted you $25,000–$40,000.",
-    body: "And that's before incentives that may or may not apply to you. You know solar makes sense — you just can't justify paying someone else's markup.",
+    Icon: TrendingUp,
+    headline: '$25,000–$40,000 just for a quote.',
+    body: 'Before any incentives that may or may not apply to you.',
   },
   {
-    emoji: '😵',
-    headline: "You don't know where to start.",
-    body: "System sizing, inverters, panels, permits, utility interconnection — it's a lot. One wrong decision and you've wasted thousands.",
+    Icon: Compass,
+    headline: "You don't know where to begin.",
+    body: 'Sizing, inverters, wiring — one wrong call costs thousands.',
   },
   {
-    emoji: '🏛️',
-    headline: "Permits and utilities feel like a maze.",
-    body: "Every county is different. Utilities push back. Inspectors want specific drawings. Most DIYers get stuck here and give up.",
+    Icon: ScrollText,
+    headline: 'Permits and utilities fight back.',
+    body: 'Every county is different. Most DIYers quit right here.',
   },
   {
-    emoji: '🤝',
-    headline: "Sales reps don't actually help you.",
-    body: "They'll sell you a system. They won't teach you the process. You're left holding a manual and a pile of equipment with no real support.",
+    Icon: UserX,
+    headline: "Sales reps sell. They don't teach.",
+    body: 'You get a manual and a pile of gear. No real support.',
   },
+]
+
+const costComparison = [
+  { label: 'Grid Utility',     cost: '$1.00+', unit: '/kWh', sub: 'And rising every year',  highlight: false, bad: true  },
+  { label: 'Contractor Solar', cost: '$0.15',  unit: '/kWh', sub: '$35,000+ installed',      highlight: false, bad: false },
+  { label: 'DIY Solar Assist', cost: '$0.041', unit: '/kWh', sub: '$12,900 in equipment',    highlight: true,  bad: false },
 ]
 
 export function ProblemSection() {
   return (
     <section className="px-4 py-14 bg-muted/40">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-3">
+      <div className="max-w-2xl mx-auto">
+
+        <div className="text-center mb-6">
+          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-2">
             Sound Familiar?
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            If you&apos;ve looked into solar and walked away frustrated, you&apos;re not alone. Here&apos;s what most homeowners run into.
+          <p className="text-muted-foreground text-sm max-w-xs mx-auto">
+            Most homeowners hit the same four walls before giving up.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {pains.map((pain) => (
-            <div
-              key={pain.headline}
-              className="bg-background rounded-xl border border-border p-6"
-            >
-              <div className="text-3xl mb-3">{pain.emoji}</div>
-              <h3 className="font-semibold text-foreground mb-2">{pain.headline}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{pain.body}</p>
+        <div className="bg-background rounded-2xl border border-border overflow-hidden divide-y divide-border">
+          {pains.map(({ Icon, headline, body }) => (
+            <div key={headline} className="flex items-center gap-4 px-5 py-5">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-foreground text-sm md:text-base leading-snug mb-0.5">
+                  {headline}
+                </p>
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                  {body}
+                </p>
+              </div>
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Icon className="w-5 h-5 text-primary" />
+              </div>
             </div>
           ))}
         </div>
@@ -52,11 +66,7 @@ export function ProblemSection() {
             Here&apos;s what the numbers actually look like on a 10kW system over 25 years:
           </p>
           <div className="grid grid-cols-3 gap-2 md:gap-3">
-            {[
-              { label: 'Grid Utility', cost: '$1.00+', unit: '/kWh', sub: 'And rising every year', highlight: false, bad: true },
-              { label: 'Contractor Solar', cost: '$0.15', unit: '/kWh', sub: '$35,000+ installed', highlight: false, bad: false },
-              { label: 'DIY Solar Assist', cost: '$0.041', unit: '/kWh', sub: '$12,900 in equipment', highlight: true, bad: false },
-            ].map((item) => (
+            {costComparison.map((item) => (
               <div
                 key={item.label}
                 className={`rounded-xl border p-2 md:p-4 text-center ${item.highlight ? 'border-primary bg-primary/5' : 'border-border bg-background'}`}
@@ -76,6 +86,7 @@ export function ProblemSection() {
             Based on 14,143 kWh/yr production, 0.5% annual degradation, 25-year system life.
           </p>
         </div>
+
       </div>
     </section>
   )

@@ -26,7 +26,6 @@ export function PhotoGrid() {
                 src={src}
                 alt={`DIY solar installation ${i + 1}`}
                 fill
-                loading="lazy"
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 33vw"
               />
