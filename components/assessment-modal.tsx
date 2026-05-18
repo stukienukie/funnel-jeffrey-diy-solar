@@ -6,7 +6,7 @@ import { X, ChevronLeft, Zap } from 'lucide-react'
 const GHL_WEBHOOK_URL = '/api/submit'
 const BOOKING_URL = 'https://links.monox.ai/widget/booking/O0rYpSBuz3AfOutCT5IG'
 
-type Step = 'state' | 'bill' | 'ownership' | 'roofType' | 'goal' | 'contact' | 'result'
+type Step = 'contact' | 'state' | 'bill' | 'ownership' | 'roofType' | 'goal' | 'result'
 type BillKey = 'under-100' | '100-149' | '150-199' | '200-299' | '300-plus'
 
 interface SavingsTier {
@@ -53,14 +53,14 @@ const ROOF_OPTIONS = [
 ]
 
 const GOAL_OPTIONS = [
-  { value: 'cut-bill',     label: 'Cut my electric bill',          sub: 'Save 60%+ on monthly utility costs',        emoji: '💸' },
-  { value: 'independence', label: 'Energy independence',           sub: 'Battery backup, self-reliance, no outages', emoji: '🔋' },
-  { value: 'rate-lock',    label: 'Protect against rising rates',  sub: 'Lock in your energy cost for 25+ years',    emoji: '📈' },
-  { value: 'home-value',   label: 'Add home value',                sub: 'Solar increases resale value significantly', emoji: '🏡' },
+  { value: 'cut-bill',     label: 'Cut my electric bill',         sub: 'Save 60%+ on monthly utility costs',        emoji: '💸' },
+  { value: 'independence', label: 'Energy independence',          sub: 'Battery backup, self-reliance, no outages', emoji: '🔋' },
+  { value: 'rate-lock',    label: 'Protect against rising rates', sub: 'Lock in your energy cost for 25+ years',    emoji: '📈' },
+  { value: 'home-value',   label: 'Add home value',               sub: 'Solar increases resale value significantly', emoji: '🏡' },
 ]
 
 const QUIZ_STEPS: Step[] = ['state', 'bill', 'ownership', 'roofType', 'goal']
-const ALL_STEPS: Step[] = [...QUIZ_STEPS, 'contact', 'result']
+const ALL_STEPS: Step[] = ['contact', ...QUIZ_STEPS, 'result']
 
 declare global {
   interface Window {
@@ -76,23 +76,23 @@ interface AssessmentModalProps {
 }
 
 export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalProps) {
-  const [step, setStep] = useState<Step>('state')
+  const [step, setStep] = useState<Step>('contact')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   const [stateValue, setStateValue] = useState('')
   const [billAmount, setBillAmount] = useState<BillKey | ''>('')
   const [ownsHome, setOwnsHome] = useState('')
   const [roofType, setRoofType] = useState('')
   const [goal, setGoal] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isShaking, setIsShaking] = useState(false)
 
   const quizIndex = QUIZ_STEPS.indexOf(step)
   const showProgress = quizIndex !== -1
-  const canGoBack = step !== 'state' && step !== 'result'
+  const canGoBack = step !== 'contact' && step !== 'result'
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -108,16 +108,16 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
   useEffect(() => {
     if (isOpen) {
-      setStep('state')
+      setStep('contact')
+      setFirstName('')
+      setLastName('')
+      setPhone('')
+      setEmail('')
       setStateValue('')
       setBillAmount('')
       setOwnsHome('')
       setRoofType('')
       setGoal('')
-      setFirstName('')
-      setLastName('')
-      setPhone('')
-      setEmail('')
       setErrors({})
     }
   }, [isOpen])
@@ -138,13 +138,12 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
   const vsContractor = savings ? savings.contractorCost - savings.diyCost : 0
   const savingsPct = savings ? Math.round((1 - savings.diyCost / savings.contractorCost) * 100) : 0
 
+  // Fires on contact submit — captures lead immediately then lets them through the quiz
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const newErrors: Record<string, string> = {}
     if (!firstName.trim()) newErrors.firstName = 'required'
-    if (!lastName.trim()) newErrors.lastName = 'required'
     if (phone.replace(/\D/g, '').length !== 10) newErrors.phone = 'required'
-    if (!email.trim() || !email.includes('@')) newErrors.email = 'required'
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) {
       setIsShaking(true)
@@ -153,8 +152,37 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     }
 
     setIsSubmitting(true)
+    try {
+      await fetch(GHL_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          phone,
+          email,
+          step: 'contact-captured',
+          tags: 'diy-solar-funnel,quiz-started',
+          source: 'DIY Solar Assist Funnel',
+        }),
+      })
+    } catch {
+      // Non-blocking — advance regardless
+    }
 
-    const goalLabel = GOAL_OPTIONS.find(o => o.value === goal)?.label ?? goal
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ event: 'contact_captured' })
+
+    setIsSubmitting(false)
+    setStep('state')
+  }
+
+  // Fires when the last quiz step (goal) is completed
+  const handleQuizComplete = async (goalValue: string) => {
+    setGoal(goalValue)
+    setStep('result')
+
+    const goalLabel = GOAL_OPTIONS.find(o => o.value === goalValue)?.label ?? goalValue
     const roofLabel = ROOF_OPTIONS.find(o => o.value === roofType)?.label ?? roofType
     const billLabel = BILL_OPTIONS.find(o => o.key === billAmount)?.label ?? billAmount
 
@@ -177,7 +205,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     ].join('\n')
 
     try {
-      await fetch(GHL_WEBHOOK_URL, {
+      fetch(GHL_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -204,7 +232,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
         }),
       })
     } catch {
-      // Non-blocking — advance regardless
+      // Non-blocking
     }
 
     window.dataLayer = window.dataLayer || []
@@ -214,7 +242,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
       monthly_bill: billAmount,
       owns_home: ownsHome,
       roof_type: roofType,
-      goal,
+      goal: goalValue,
       savings_vs_contractor: vsContractor,
       savings_pct: savingsPct,
     })
@@ -222,9 +250,6 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     if (typeof window.fbq === 'function') {
       window.fbq('track', 'Lead')
     }
-
-    setIsSubmitting(false)
-    setStep('result')
   }
 
   if (!isOpen) return null
@@ -280,6 +305,90 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
 
         {/* Scrollable content */}
         <div className="overflow-y-auto flex-1 p-6">
+
+          {/* ── CONTACT (first — incentivised) ────────────────────── */}
+          {step === 'contact' && (
+            <div>
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="relative mb-4">
+                  <img
+                    src="/jeffrey-about.png"
+                    alt="Jeffrey"
+                    className="w-20 h-20 rounded-full object-cover object-center shadow-md border-2 border-primary/30"
+                    loading="eager"
+                    decoding="async"
+                  />
+                  <span className="absolute -bottom-1 -right-1 text-lg">☀️</span>
+                </div>
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full mb-3">
+                  <Zap className="w-3 h-3 fill-current" />
+                  Free DIY Solar Savings Estimate
+                </div>
+                <h2 className="font-heading text-2xl text-foreground mb-2 leading-tight">
+                  See how much you'd save going solar the DIY way
+                </h2>
+                <p className="text-muted-foreground text-sm max-w-xs">
+                  Answer 5 quick questions and we'll calculate your personalized savings estimate with Jeffrey's guidance.
+                </p>
+              </div>
+
+              <form onSubmit={handleContactSubmit} className={`space-y-3 ${isShaking ? 'animate-shake' : ''}`}>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="fname"
+                    autoComplete="given-name"
+                    placeholder="First Name *"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.firstName ? 'border-destructive' : 'border-input'}`}
+                  />
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lname"
+                    autoComplete="family-name"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  />
+                </div>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  autoComplete="tel"
+                  placeholder="(555) 867-5309 *"
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.phone ? 'border-destructive' : 'border-input'}`}
+                />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder="Email Address (optional)"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-bold py-4 px-8 rounded-2xl transition-all text-lg cursor-pointer mt-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'One moment...' : 'Get My Savings Estimate →'}
+                </button>
+                <p className="text-xs text-center text-muted-foreground">
+                  Free · No commitment · Your info is never shared
+                </p>
+              </form>
+            </div>
+          )}
 
           {/* ── STEP 1: STATE ─────────────────────────────────────── */}
           {step === 'state' && (
@@ -428,7 +537,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                 {GOAL_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
-                    onClick={() => { setGoal(opt.value); setStep('contact') }}
+                    onClick={() => handleQuizComplete(opt.value)}
                     className="w-full flex items-center gap-4 p-4 rounded-xl border border-input hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-left"
                   >
                     <span className="text-2xl w-8 text-center flex-shrink-0">{opt.emoji}</span>
@@ -439,78 +548,6 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
                   </button>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* ── CONTACT GATE ──────────────────────────────────────── */}
-          {step === 'contact' && (
-            <div>
-              <div className="flex flex-col items-center text-center mb-6">
-                <div className="relative mb-4">
-                  <img
-                    src="/jeffrey-about.png"
-                    alt="Jeffrey"
-                    className="w-20 h-20 rounded-full object-cover object-center shadow-md border-2 border-primary/30"
-                    loading="eager"
-                    decoding="async"
-                  />
-                  <span className="absolute -bottom-1 -right-1 text-lg">☀️</span>
-                </div>
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full mb-3">
-                  <Zap className="w-3 h-3 fill-current" />
-                  Your personalized estimate is ready
-                </div>
-                <h2 className="font-heading text-2xl text-foreground mb-2 leading-tight">
-                  Where should we send your savings estimate?
-                </h2>
-                <p className="text-muted-foreground text-sm max-w-xs">
-                  Enter your info to unlock your personalized 25-year solar savings breakdown.
-                </p>
-              </div>
-
-              <form onSubmit={handleContactSubmit} className={`space-y-3 ${isShaking ? 'animate-shake' : ''}`}>
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.firstName ? 'border-destructive' : 'border-input'}`}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.lastName ? 'border-destructive' : 'border-input'}`}
-                  />
-                </div>
-                <input
-                  type="tel"
-                  placeholder="(555) 867-5309"
-                  value={phone}
-                  onChange={(e) => setPhone(formatPhone(e.target.value))}
-                  className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.phone ? 'border-destructive' : 'border-input'}`}
-                />
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.email ? 'border-destructive' : 'border-input'}`}
-                />
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-bold py-4 px-8 rounded-2xl transition-all text-lg cursor-pointer mt-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Calculating...' : 'Show My Savings Estimate →'}
-                </button>
-                <p className="text-xs text-center text-muted-foreground">
-                  Free · No commitment · Your info is never shared
-                </p>
-              </form>
             </div>
           )}
 
@@ -540,12 +577,12 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
               {/* 6-cell breakdown with ✓/✗ marks */}
               <div className="grid grid-cols-2 gap-2 mb-4 sm:grid-cols-3">
                 {[
-                  { label: 'System Size',           value: `${savings.systemSize} kW`,                                         mark: null },
-                  { label: 'Your DIY Cost',          value: `$${savings.diyCost.toLocaleString()}`,                            mark: 'check' },
-                  { label: 'Contractor Cost',        value: `$${savings.contractorCost.toLocaleString()}`,                     mark: 'x' },
-                  { label: 'Monthly Savings Est.',   value: `$${savings.monthlySavings}/mo`,                                   mark: 'check' },
-                  { label: 'Payback Period',         value: `${savings.paybackYears} yrs`,                                     mark: 'check' },
-                  { label: 'You Save',               value: `~${savingsPct}%`,                                                 mark: 'check' },
+                  { label: 'System Size',           value: `${savings.systemSize} kW`,                   mark: null },
+                  { label: 'Your DIY Cost',          value: `$${savings.diyCost.toLocaleString()}`,       mark: 'check' },
+                  { label: 'Contractor Cost',        value: `$${savings.contractorCost.toLocaleString()}`, mark: 'x' },
+                  { label: 'Monthly Savings Est.',   value: `$${savings.monthlySavings}/mo`,              mark: 'check' },
+                  { label: 'Payback Period',         value: `${savings.paybackYears} yrs`,                mark: 'check' },
+                  { label: 'You Save',               value: `~${savingsPct}%`,                            mark: 'check' },
                 ].map((cell) => (
                   <div
                     key={cell.label}
