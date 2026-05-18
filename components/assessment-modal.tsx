@@ -82,7 +82,8 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
   const [ownsHome, setOwnsHome] = useState('')
   const [roofType, setRoofType] = useState('')
   const [goal, setGoal] = useState('')
-  const [name, setName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -113,7 +114,8 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
       setOwnsHome('')
       setRoofType('')
       setGoal('')
-      setName('')
+      setFirstName('')
+      setLastName('')
       setPhone('')
       setEmail('')
       setErrors({})
@@ -125,6 +127,13 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
     if (idx > 0) setStep(ALL_STEPS[idx - 1])
   }
 
+  const formatPhone = (raw: string) => {
+    const digits = raw.replace(/\D/g, '').slice(0, 10)
+    if (digits.length < 4) return digits
+    if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+  }
+
   const savings = billAmount ? SAVINGS[billAmount] : null
   const vsContractor = savings ? savings.contractorCost - savings.diyCost : 0
   const savingsPct = savings ? Math.round((1 - savings.diyCost / savings.contractorCost) * 100) : 0
@@ -132,8 +141,9 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const newErrors: Record<string, string> = {}
-    if (!name.trim()) newErrors.name = 'required'
-    if (!phone.trim()) newErrors.phone = 'required'
+    if (!firstName.trim()) newErrors.firstName = 'required'
+    if (!lastName.trim()) newErrors.lastName = 'required'
+    if (phone.replace(/\D/g, '').length !== 10) newErrors.phone = 'required'
     if (!email.trim() || !email.includes('@')) newErrors.email = 'required'
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) {
@@ -171,8 +181,8 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: name.trim().split(' ')[0],
-          last_name: name.trim().split(' ').slice(1).join(' ') || '',
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
           phone,
           email,
           state: stateValue,
@@ -459,18 +469,27 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
               </div>
 
               <form onSubmit={handleContactSubmit} className={`space-y-3 ${isShaking ? 'animate-shake' : ''}`}>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.name ? 'border-destructive' : 'border-input'}`}
-                />
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.firstName ? 'border-destructive' : 'border-input'}`}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.lastName ? 'border-destructive' : 'border-input'}`}
+                  />
+                </div>
                 <input
                   type="tel"
-                  placeholder="Phone Number"
+                  placeholder="(555) 867-5309"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
                   className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.phone ? 'border-destructive' : 'border-input'}`}
                 />
                 <input
@@ -501,7 +520,7 @@ export function AssessmentModal({ isOpen, onClose, onSuccess }: AssessmentModalP
               <div className="text-center mb-5">
                 <div className="text-4xl mb-2">🎉</div>
                 <h2 className="font-heading text-2xl text-foreground mb-1">
-                  {`Here's your estimate, ${name.trim().split(' ')[0]}!`}
+                  {`Here's your estimate, ${firstName}!`}
                 </h2>
                 <p className="text-muted-foreground text-sm">
                   Based on a {savings.systemSize} kW system in {stateValue}
