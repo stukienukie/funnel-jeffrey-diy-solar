@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { X, ChevronLeft, Zap } from 'lucide-react'
 
 const GHL_WEBHOOK_URL = '/api/submit'
-const BOOKING_URL = 'https://links.monox.ai/widget/booking/Nlssq8ZwRrbqKVyuXNw4'
+const BOOKING_URL = 'https://links.monox.ai/widget/booking/O0rYpSBuz3AfOutCT5IG'
 
 type Step = 'state' | 'bill' | 'ownership' | 'roofType' | 'goal' | 'contact' | 'result'
 type BillKey = 'under-100' | '100-149' | '150-199' | '200-299' | '300-plus'
